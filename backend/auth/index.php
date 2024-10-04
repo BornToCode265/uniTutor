@@ -22,10 +22,13 @@ switch ($method) {
   case 'GET':
  
 
-
+if (isset($_GET['email']) && isset($_GET['password'])) {
         $email = $_GET['email'];
-       
-  $stmt = $pdo->query("SELECT * FROM students  WHERE email= $email");
+        $password = $_GET['password'];
+
+
+
+  $stmt = $pdo->query("SELECT * FROM students  WHERE email= $email ORDER BY registration_number");
         
         $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -34,12 +37,16 @@ switch ($method) {
         $result = $students[0];
 
 
+if (md5($password) == $result['password_hash']) {
+    echo json_encode(true);
+} else {
+    echo json_encode(false);
+}
 
-    echo json_encode($result);
-
-echo json_encode(['error' => 'no data passed']);
-
-break;
+  }else{
+    echo json_encode(['error' => 'no data passed']);
+  }
+    break;
 
        default:
         http_response_code(405);
