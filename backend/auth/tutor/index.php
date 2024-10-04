@@ -37,7 +37,7 @@ if (isset($_GET['email']) && isset($_GET['password'])) {
         $result = $tutor[0];
 
 
-if (md5($password) == $result['password_hash']) {
+if (password_verify(md5($password) ,$result['password_hash'])) {
     echo json_encode(true);
 } else {
     echo json_encode(false);
