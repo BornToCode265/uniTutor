@@ -18,6 +18,7 @@ The backend includes API endpoints for CRUD operations. To set up the backend:
 4. Start the XAMPP control panel
 
 5. Start Apache server and MySQL server
+6. import the database mzunitutorapp in the database 
 
 6. Test the setup by opening index.html in your browser
 
