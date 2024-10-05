@@ -7,7 +7,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 // Create a PDO instance
-$pdo = new PDO('mysql:host=localhost;dbname=your_database_name', 'username', 'password');
+
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Function to handle errors
