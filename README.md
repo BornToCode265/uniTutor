@@ -55,7 +55,7 @@ If everything is set up correctly, you should see a JSON response similar to thi
 <br />
 
 ### John Doe Authentication
-<img src="johnAuth.png" alt="John Doe Authentication" width="300" height="200" align="right">
+<img src="johnAuth.png" alt="John Doe Authentication" width="300" height="200" align="centre">
 <br />
 
 ### Jane Smith Authentication
