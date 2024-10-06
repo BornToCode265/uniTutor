@@ -52,9 +52,17 @@ If everything is set up correctly, you should see a JSON response similar to thi
 <!-- ![Test Image](teste.png) -->
 ### get Request
 <img src="teste.png" alt="Test Image" width="300" height="200" align="right">
+<br />
 
 ### john ath
 <img src="johnAuth.png" alt="Test Image" width="300" height="200" align="right">
+<br />
 
 ### jane ath
 <img src="janeAuth.png" alt="Test Image" width="300" height="200" align="right">
+<br />
+
+
+### jane ath
+<img src="adminAuth.png" alt="Test Image" width="300" height="200" align="right">
+<br />
