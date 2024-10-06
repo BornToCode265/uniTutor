@@ -12,7 +12,7 @@ header("Access-Control-Allow-Headers: * ");
 
 
 
-require_once("./../conn.php");
+require_once("./../../conn.php");
 
 $method = $_SERVER['REQUEST_METHOD'];
 
