@@ -28,7 +28,7 @@ if (isset($_GET['email']) && isset($_GET['password'])) {
 
 
 
-  $stmt = $pdo->query("SELECT * FROM tutors  WHERE email= $email ORDER BY registration_number");
+  $stmt = $pdo->query("SELECT * FROM tutors  WHERE email= $email");
         
         $tutor = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
