@@ -59,7 +59,7 @@ If everything is set up correctly, you should see a JSON response similar to thi
 <br />
 
 ### Jane Smith Authentication
-<img src="janeAuth.png" alt="Jane Smith Authentication" width="300" height="200" align="left">
+<img src="janeAuth.png" alt="Jane Smith Authentication" width="300" height="200" align="centre">
 <br />
 
 ### Admin Authentication
