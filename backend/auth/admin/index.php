@@ -12,7 +12,7 @@ header("Access-Control-Allow-Headers: * ");
 
 
 
-require_once("../../conn.php");
+require_once("./../../conn.php");
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -28,7 +28,7 @@ if (isset($_GET['email']) && isset($_GET['password'])) {
 
 
 
-  $stmt = $pdo->query("SELECT * FROM admins WHERE email= $email ORDER BY registration_number");
+  $stmt = $pdo->query("SELECT * FROM admins WHERE email= $email ");
         
         $admin = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
