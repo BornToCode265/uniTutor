@@ -2,8 +2,24 @@
 
 ## Student
 - Email: john.doe@mzuni.ac.mw
-- Password: 1347
+- Password: john
 
+- jane.smith@mzuni.ac.mw
+- Pasword : jane
+
+## Admin
+- admin@mzuni.ac.mw
+- Password : admin
+
+- superadmin@mzuni.ac.mw
+- Password : superadmin
+
+## Tutors
+- jwilson@mzuni.ac.mw
+- Password : tutorjane
+
+- jtaylor@mzuni.ac.mw
+- Password : tutorjohn
 ## Backend Setup
 
 The backend includes API endpoints for CRUD operations. To set up the backend:
@@ -34,5 +50,11 @@ To ensure the API is working correctly:
 
 If everything is set up correctly, you should see a JSON response similar to this:
 <!-- ![Test Image](teste.png) -->
-
+### get Request
 <img src="teste.png" alt="Test Image" width="300" height="200" align="right">
+
+### john ath
+<img src="johnAuth.png" alt="Test Image" width="300" height="200" align="right">
+
+### jane ath
+<img src="janeAuth.png" alt="Test Image" width="300" height="200" align="right">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 04, 2024 at 05:51 PM
+-- Generation Time: Oct 06, 2024 at 01:45 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -40,8 +40,8 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`admin_id`, `name`, `email`, `password_hash`, `created_at`) VALUES
-(1, 'Admin User', 'admin@mzuni.ac.mw', 'hashed_password', '2024-10-04 12:32:53'),
-(2, 'Super Admin', 'superadmin@mzuni.ac.mw', 'hashed_password', '2024-10-04 12:32:53');
+(1, 'Admin User', 'admin@mzuni.ac.mw', '21232f297a57a5a743894a0e4a801fc3', '2024-10-04 12:32:53'),
+(2, 'Super Admin', 'superadmin@mzuni.ac.mw', '17c4520f6cfd1ab53d8745e84681eb49', '2024-10-04 12:32:53');
 
 -- --------------------------------------------------------
 
@@ -167,7 +167,7 @@ CREATE TABLE `qualifications` (
 
 INSERT INTO `qualifications` (`qualification_id`, `qualification_name`, `description`) VALUES
 (1, 'Ph.D. in Computer Science', 'Doctoral degree in Computer Science'),
-(2, 'Master\'s in 'Mathematics', 'Postgraduate degree in Mathematics');
+(2, 'Masters in Mathematics', 'Postgraduate degree in Mathematics');
 
 -- --------------------------------------------------------
 
@@ -280,8 +280,8 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`student_id`, `registration_number`, `name`, `email`, `phone_number`, `program_id`, `created_at`, `password_hash`) VALUES
-(1, 'CS001', 'John Doe', 'john.doe@mzuni.ac.mw', '0888888888', 1, '2024-10-04 12:32:50', '0e55666a4ad822e0e34299df3591d979'),
-(2, 'MATH002', 'Jane Smith', 'jane.smith@mzuni.ac.mw', '0999999999', 2, '2024-10-04 12:32:50', '');
+(1, 'CS001', 'John Doe', 'john.doe@mzuni.ac.mw', '0888888888', 1, '2024-10-04 12:32:50', '527bd5b5d689e2c32ae974c6229ff785'),
+(2, 'MATH002', 'Jane Smith', 'jane.smith@mzuni.ac.mw', '0999999999', 2, '2024-10-04 12:32:50', '5844a15e76563fedd11840fd6f40ea7b');
 
 -- --------------------------------------------------------
 
@@ -323,8 +323,8 @@ CREATE TABLE `tutors` (
 --
 
 INSERT INTO `tutors` (`tutor_id`, `name`, `email`, `phone_number`, `created_at`, `password_hash`) VALUES
-(1, 'Dr. John Taylor', 'jtaylor@mzuni.ac.mw', '0777777777', '2024-10-04 12:32:50', ''),
-(2, 'Dr. Jane Wilson', 'jwilson@mzuni.ac.mw', '0666666666', '2024-10-04 12:32:50', '');
+(1, 'Dr. John Taylor', 'jtaylor@mzuni.ac.mw', '0777777777', '2024-10-04 12:32:50', '6c72103eb1c20f139f8bf00a5d2351f0'),
+(2, 'Dr. Jane Wilson', 'jwilson@mzuni.ac.mw', '0666666666', '2024-10-04 12:32:50', 'b2fd71222e997881ce80bb4550aecb8c');
 
 -- --------------------------------------------------------
 
