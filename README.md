@@ -51,18 +51,17 @@ To ensure the API is working correctly:
 If everything is set up correctly, you should see a JSON response similar to this:
 <!-- ![Test Image](teste.png) -->
 ### get Request
-<img src="teste.png" alt="Test Image" width="300" height="200" align="right">
+<img src="teste.png" alt="Test Image" width="300" height="200" align="centre">
 <br />
 
-### john ath
-<img src="johnAuth.png" alt="Test Image" width="300" height="200" align="right">
+### John Doe Authentication
+<img src="johnAuth.png" alt="John Doe Authentication" width="300" height="200" align="right">
 <br />
 
-### jane ath
-<img src="janeAuth.png" alt="Test Image" width="300" height="200" align="right">
+### Jane Smith Authentication
+<img src="janeAuth.png" alt="Jane Smith Authentication" width="300" height="200" align="left">
 <br />
 
-
-### jane ath
-<img src="adminAuth.png" alt="Test Image" width="300" height="200" align="right">
+### Admin Authentication
+<img src="adminauth.png" alt="Admin Authentication" width="300" height="200" align="centre">
 <br />
