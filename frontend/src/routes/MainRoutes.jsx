@@ -6,11 +6,10 @@ import Dashboard from 'layout/Dashboard';
 import Admins from 'pages/Admin/Admins';
 import Students from 'pages/Admin/Students';
 import Tutors from 'pages/Admin/Tutors';
-import Login from 'pages/authentication/login';
-import AuthRegister from 'pages/authentication/auth-forms/AuthRegister';
 import AdminDashboard from 'pages/Admin/AdminDashboard';
 import TutorDashboard from 'pages/Tutor/TutorDashboard';
 import StudentDashboard from 'pages/Student/StudentDashboard';
+import Register from 'pages/authentication/register';
 
 const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
@@ -59,8 +58,8 @@ const MainRoutes = {
       element: <Students />
     },
     {
-      path: '/register',
-      element: <AuthRegister />
+      path: 'register',
+      element: <Register />
     },
     {
       path: 'tutors',

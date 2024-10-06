@@ -6,14 +6,20 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // project import
-import AuthWrapper from './AuthWrapper';
 import AuthRegister from './auth-forms/AuthRegister';
+import { Box } from '@mui/material';
 
 // ================================|| REGISTER ||================================ //
 
 export default function Register() {
   return (
-    <AuthWrapper>
+    <Box
+      sx={{
+        maxWidth: '500px',
+        mx: 'auto',
+        p: 2
+      }}
+    >
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Stack direction="row" justifyContent="space-between" alignItems="baseline" sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
@@ -24,6 +30,6 @@ export default function Register() {
           <AuthRegister />
         </Grid>
       </Grid>
-    </AuthWrapper>
+    </Box>
   );
 }

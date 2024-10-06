@@ -116,7 +116,7 @@ export default function AuthRegister() {
           confirm_password: Yup.string()
             .oneOf([Yup.ref('password'), null], 'Passwords must match')
             .required('Password confirmation is required'), // Password confirmation validation
-          program_id: Yup.string().required('Program selection is required')
+          program_id: Yup.string()
         })}
         onSubmit={handleSubmit}
       >
@@ -249,21 +249,29 @@ export default function AuthRegister() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="program-id-signup">Program*</InputLabel>
-                  <FormControl fullWidth error={Boolean(touched.program_id && errors.program_id)}>
-                    <Select id="program-id-signup" name="program_id" value={values.program_id} onChange={handleChange} onBlur={handleBlur}>
-                      {programs.map((program) => (
-                        <MenuItem key={program.program_id} value={program.program_id}>
-                          {program.program_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {touched.program_id && errors.program_id && <FormHelperText error>{errors.program_id}</FormHelperText>}
-                  </FormControl>
-                </Stack>
-              </Grid>
+              {userType === 'student' && (
+                <Grid item xs={12}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="program-id-signup">Program</InputLabel>
+                    <FormControl fullWidth error={Boolean(touched.program_id && errors.program_id)}>
+                      <Select
+                        id="program-id-signup"
+                        name="program_id"
+                        value={values.program_id}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      >
+                        {programs.map((program) => (
+                          <MenuItem key={program.program_id} value={program.program_id}>
+                            {program.program_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {touched.program_id && errors.program_id && <FormHelperText error>{errors.program_id}</FormHelperText>}
+                    </FormControl>
+                  </Stack>
+                </Grid>
+              )}
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="password-signup">Password*</InputLabel>

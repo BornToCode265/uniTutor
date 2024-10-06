@@ -27,7 +27,7 @@ const rows = [
 function Students() {
   return (
     <Box>
-      <Link href="register" underline="none">
+      <Link href="/register" underline="none">
         <Button variant="contained" color="primary">
           Add New User
         </Button>
