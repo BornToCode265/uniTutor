@@ -4,19 +4,17 @@
 - Email: john.doe@mzuni.ac.mw
 - Password: john
 
-- john.doe@mzuni.ac.mw
-- Password : john
-
 - jane.smith@mzuni.ac.mw
 - Pasword : jane
 
-
+## Admin
 - admin@mzuni.ac.mw
 - Password : admin
 
 - superadmin@mzuni.ac.mw
 - Password : superadmin
 
+## Tutors
 - jwilson@mzuni.ac.mw
 - Password : tutorjane
 
