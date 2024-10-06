@@ -25,7 +25,9 @@ switch ($method) {
 
         $email = $_GET['email'];
        
-  $stmt = $pdo->query("SELECT * FROM tutors  WHERE email= $email");
+      $stmt = $pdo->prepare("SELECT * FROM tutors WHERE email = ?");
+      $stmt->execute([$email]);
+
         
         $tutors = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
