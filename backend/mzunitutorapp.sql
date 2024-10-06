@@ -1,236 +1,697 @@
-CREATE DATABASE MZUNI_Tutoring_App;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Oct 04, 2024 at 05:51 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.1.17
 
-USE MZUNI_Tutoring_App;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- Programs Table
-CREATE TABLE Programs (
-    program_id INT AUTO_INCREMENT PRIMARY KEY,
-    program_name VARCHAR(100) NOT NULL,
-    description TEXT
-);
 
--- Students Table
-CREATE TABLE Students (
-    student_id INT AUTO_INCREMENT PRIMARY KEY,
-    registration_number VARCHAR(50) NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone_number VARCHAR(20),
-    program_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (program_id) REFERENCES Programs(program_id)
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- Tutors Table
-CREATE TABLE Tutors (
-    tutor_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone_number VARCHAR(20),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+--
+-- Database: `mzuni_tutoring_app`
+--
 
--- Qualifications Table
-CREATE TABLE Qualifications (
-    qualification_id INT AUTO_INCREMENT PRIMARY KEY,
-    qualification_name VARCHAR(100) NOT NULL,
-    description TEXT
-);
+-- --------------------------------------------------------
 
--- Tutor_Qualifications Table
-CREATE TABLE Tutor_Qualifications (
-    tutor_qualification_id INT AUTO_INCREMENT PRIMARY KEY,
-    tutor_id INT,
-    qualification_id INT,
-    FOREIGN KEY (tutor_id) REFERENCES Tutors(tutor_id),
-    FOREIGN KEY (qualification_id) REFERENCES Qualifications(qualification_id)
-);
+--
+-- Table structure for table `admins`
+--
 
--- Expertise Table
-CREATE TABLE Expertise (
-    expertise_id INT AUTO_INCREMENT PRIMARY KEY,
-    expertise_name VARCHAR(100) NOT NULL,
-    description TEXT
-);
+CREATE TABLE `admins` (
+  `admin_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Tutor_Expertise Table
-CREATE TABLE Tutor_Expertise (
-    tutor_expertise_id INT AUTO_INCREMENT PRIMARY KEY,
-    tutor_id INT,
-    expertise_id INT,
-    FOREIGN KEY (tutor_id) REFERENCES Tutors(tutor_id),
-    FOREIGN KEY (expertise_id) REFERENCES Expertise(expertise_id)
-);
+--
+-- Dumping data for table `admins`
+--
 
--- Availability Table
-CREATE TABLE Availability (
-    availability_id INT AUTO_INCREMENT PRIMARY KEY,
-    tutor_id INT,
-    available_date DATE NOT NULL,
-    available_time TIME NOT NULL,
-    status ENUM('Available', 'Booked', 'Unavailable') DEFAULT 'Available',
-    FOREIGN KEY (tutor_id) REFERENCES Tutors(tutor_id)
-);
+INSERT INTO `admins` (`admin_id`, `name`, `email`, `password_hash`, `created_at`) VALUES
+(1, 'Admin User', 'admin@mzuni.ac.mw', 'hashed_password', '2024-10-04 12:32:53'),
+(2, 'Super Admin', 'superadmin@mzuni.ac.mw', 'hashed_password', '2024-10-04 12:32:53');
 
--- Status_Lookup Table
-CREATE TABLE Status_Lookup (
-    status_id INT AUTO_INCREMENT PRIMARY KEY,
-    status_name VARCHAR(50) NOT NULL,
-    description TEXT
-);
+-- --------------------------------------------------------
 
--- Sessions Table
-CREATE TABLE Sessions (
-    session_id INT AUTO_INCREMENT PRIMARY KEY,
-    tutor_id INT,
-    student_id INT,
-    subject_id INT,
-    session_date DATE NOT NULL,
-    session_time TIME NOT NULL,
-    status INT,
-    feedback_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (tutor_id) REFERENCES Tutors(tutor_id),
-    FOREIGN KEY (student_id) REFERENCES Students(student_id),
-    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id),
-    FOREIGN KEY (feedback_id) REFERENCES Feedback(feedback_id),
-    FOREIGN KEY (status) REFERENCES Status_Lookup(status_id)
-);
+--
+-- Table structure for table `availability`
+--
 
--- Feedback Table
-CREATE TABLE Feedback (
-    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
-    session_id INT,
-    rating INT CHECK (rating BETWEEN 1 AND 5),
-    comments TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (session_id) REFERENCES Sessions(session_id)
-);
+CREATE TABLE `availability` (
+  `availability_id` int(11) NOT NULL,
+  `tutor_id` int(11) DEFAULT NULL,
+  `available_date` date NOT NULL,
+  `available_time` time NOT NULL,
+  `status` enum('Available','Booked','Unavailable') DEFAULT 'Available'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Admins Table
-CREATE TABLE Admins (
-    admin_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+--
+-- Dumping data for table `availability`
+--
 
--- Subjects Table
-CREATE TABLE Subjects (
-    subject_id INT AUTO_INCREMENT PRIMARY KEY,
-    subject_name VARCHAR(100) NOT NULL,
-    description TEXT
-);
+INSERT INTO `availability` (`availability_id`, `tutor_id`, `available_date`, `available_time`, `status`) VALUES
+(1, 1, '2023-03-15', '09:00:00', 'Available'),
+(2, 2, '2023-03-16', '10:00:00', 'Available');
 
--- Messages Table
-CREATE TABLE Messages (
-    message_id INT AUTO_INCREMENT PRIMARY KEY,
-    sender_id INT,
-    receiver_id INT,
-    message_content TEXT,
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sender_id) REFERENCES Students(student_id),
-    FOREIGN KEY (receiver_id) REFERENCES Tutors(tutor_id)
-);
+-- --------------------------------------------------------
 
--- Session Bookings Table
-CREATE TABLE Session_Bookings (
-    booking_id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id INT,
-    tutor_id INT,
-    session_id INT,
-    booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES Students(student_id),
-    FOREIGN KEY (tutor_id) REFERENCES Tutors(tutor_id),
-    FOREIGN KEY (session_id) REFERENCES Sessions(session_id)
-);
+--
+-- Table structure for table `expertise`
+--
 
--- Roles Table
-CREATE TABLE Roles (
-    role_id INT AUTO_INCREMENT PRIMARY KEY,
-    role_name VARCHAR(50) NOT NULL
-);
+CREATE TABLE `expertise` (
+  `expertise_id` int(11) NOT NULL,
+  `expertise_name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- User_Roles Table
-CREATE TABLE User_Roles (
-    user_role_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    role_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Admins(admin_id),
-    FOREIGN KEY (role_id) REFERENCES Roles(role_id)
-);
+--
+-- Dumping data for table `expertise`
+--
 
--- Insert sample data
-INSERT INTO Programs (program_name, description) VALUES
-('Computer Science', 'Bachelor''s degree in Computer Science'),
-('Mathematics', 'Bachelor''s degree in Mathematics');
+INSERT INTO `expertise` (`expertise_id`, `expertise_name`, `description`) VALUES
+(1, 'Artificial Intelligence', 'Specialization in AI and Machine Learning'),
+(2, 'Number Theory', 'Specialization in Number Theory');
 
-INSERT INTO Students (registration_number, name, email, phone_number, program_id) VALUES
-('CS001', 'John Doe', 'john.doe@mzuni.ac.mw', '0888888888', 1),
-('MATH002', 'Jane Smith', 'jane.smith@mzuni.ac.mw', '0999999999', 2);
+-- --------------------------------------------------------
 
-INSERT INTO Tutors (name, email, phone_number) VALUES
-('Dr. John Taylor', 'jtaylor@mzuni.ac.mw', '0777777777'),
-('Dr. Jane Wilson', 'jwilson@mzuni.ac.mw', '0666666666');
+--
+-- Table structure for table `feedback`
+--
 
-INSERT INTO Qualifications (qualification_name, description) VALUES
-('Ph.D. in Computer Science', 'Doctoral degree in Computer Science'),
-('Master''s in Mathematics', 'Postgraduate degree in Mathematics');
+CREATE TABLE `feedback` (
+  `feedback_id` int(11) NOT NULL,
+  `session_id` int(11) DEFAULT NULL,
+  `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
+  `comments` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO Tutor_Qualifications (tutor_id, qualification_id) VALUES
-(1, 1),
-(2, 2);
+--
+-- Dumping data for table `feedback`
+--
 
-INSERT INTO Expertise (expertise_name, description) VALUES
-('Artificial Intelligence', 'Specialization in AI and Machine Learning'),
-('Number Theory', 'Specialization in Number Theory');
+INSERT INTO `feedback` (`feedback_id`, `session_id`, `rating`, `comments`, `created_at`) VALUES
+(1, 1, 5, 'Excellent session', '2024-10-04 12:32:52'),
+(2, 2, 4, 'Good session', '2024-10-04 12:32:52');
 
-INSERT INTO Tutor_Expertise (tutor_id, expertise_id) VALUES
-(1, 1),
-(2, 2);
+-- --------------------------------------------------------
 
-INSERT INTO Availability (tutor_id, available_date, available_time, status) VALUES
-(1, '2023-03-15', '09:00:00', 'Available'),
-(2, '2023-03-16', '10:00:00', 'Available');
+--
+-- Table structure for table `messages`
+--
 
-INSERT INTO Status_Lookup (status_name, description) VALUES
-('Scheduled', 'Session scheduled'),
-('Completed', 'Session completed'),
-('Cancelled', 'Session cancelled');
+CREATE TABLE `messages` (
+  `message_id` int(11) NOT NULL,
+  `sender_id` int(11) DEFAULT NULL,
+  `receiver_id` int(11) DEFAULT NULL,
+  `message_content` text DEFAULT NULL,
+  `sent_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO Subjects (subject_name, description) VALUES
-('Data Structures', 'Course on data structures and algorithms'),
-('Calculus', 'Course on differential calculus');
+--
+-- Dumping data for table `messages`
+--
 
-INSERT INTO Sessions (tutor_id, student_id, subject_id, session_date, session_time, status, feedback_id) VALUES
-(1, 1, 1, '2023-03-17', '11:00:00', 1, NULL),
-(2, 2, 2, '2023-03-18', '12:00:00', 1, NULL);
+INSERT INTO `messages` (`message_id`, `sender_id`, `receiver_id`, `message_content`, `sent_at`) VALUES
+(1, 1, 1, 'Hi Dr. Taylor, I have a question about the assignment.', '2024-10-04 12:32:53'),
+(2, 2, 2, 'Hi Dr. Wilson, could we schedule an extra session?', '2024-10-04 12:32:53');
 
-INSERT INTO Feedback (session_id, rating, comments) VALUES
-(1, 5, 'Excellent session'),
-(2, 4, 'Good session');
+-- --------------------------------------------------------
 
-INSERT INTO Admins (name, email, password_hash) VALUES
-('Admin User', 'admin@mzuni.ac.mw', 'hashed_password'),
-('Super Admin', 'superadmin@mzuni.ac.mw', 'hashed_password');
+--
+-- Table structure for table `programs`
+--
 
-INSERT INTO Messages (sender_id, receiver_id, message_content) VALUES
-(1, 1, 'Hi Dr. Taylor, I have a question about the assignment.'),
-(2, 2, 'Hi Dr. Wilson, could we schedule an extra session?');
+CREATE TABLE `programs` (
+  `program_id` int(11) NOT NULL,
+  `program_name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO Session_Bookings (student_id, tutor_id, session_id) VALUES
+--
+-- Dumping data for table `programs`
+--
+
+INSERT INTO `programs` (`program_id`, `program_name`, `description`) VALUES
+(1, 'Computer Science', 'Bachelor\'s degree in Computer Science'),
+(2, 'Mathematics', 'Bachelor\'s degree in Mathematics');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `qualifications`
+--
+
+CREATE TABLE `qualifications` (
+  `qualification_id` int(11) NOT NULL,
+  `qualification_name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `qualifications`
+--
+
+INSERT INTO `qualifications` (`qualification_id`, `qualification_name`, `description`) VALUES
+(1, 'Ph.D. in Computer Science', 'Doctoral degree in Computer Science'),
+(2, 'Master\'s in 'Mathematics', 'Postgraduate degree in Mathematics');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `roles`
+--
+
+CREATE TABLE `roles` (
+  `role_id` int(11) NOT NULL,
+  `role_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`role_id`, `role_name`) VALUES
+(1, 'Student'),
+(2, 'Tutor'),
+(3, 'Admin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `session_id` int(11) NOT NULL,
+  `tutor_id` int(11) DEFAULT NULL,
+  `student_id` int(11) DEFAULT NULL,
+  `subject_id` int(11) DEFAULT NULL,
+  `session_date` date NOT NULL,
+  `session_time` time NOT NULL,
+  `status` int(11) DEFAULT NULL,
+  `feedback_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sessions`
+--
+
+INSERT INTO `sessions` (`session_id`, `tutor_id`, `student_id`, `subject_id`, `session_date`, `session_time`, `status`, `feedback_id`, `created_at`) VALUES
+(1, 1, 1, 1, '2023-03-17', '11:00:00', 1, NULL, '2024-10-04 12:32:52'),
+(2, 2, 2, 2, '2023-03-18', '12:00:00', 1, NULL, '2024-10-04 12:32:52');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `session_bookings`
+--
+
+CREATE TABLE `session_bookings` (
+  `booking_id` int(11) NOT NULL,
+  `student_id` int(11) DEFAULT NULL,
+  `tutor_id` int(11) DEFAULT NULL,
+  `session_id` int(11) DEFAULT NULL,
+  `booked_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `session_bookings`
+--
+
+INSERT INTO `session_bookings` (`booking_id`, `student_id`, `tutor_id`, `session_id`, `booked_at`) VALUES
+(1, 1, 1, 1, '2024-10-04 12:32:53'),
+(2, 2, 2, 2, '2024-10-04 12:32:53');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `status_lookup`
+--
+
+CREATE TABLE `status_lookup` (
+  `status_id` int(11) NOT NULL,
+  `status_name` varchar(50) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `status_lookup`
+--
+
+INSERT INTO `status_lookup` (`status_id`, `status_name`, `description`) VALUES
+(1, 'Scheduled', 'Session scheduled'),
+(2, 'Completed', 'Session completed'),
+(3, 'Cancelled', 'Session cancelled');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `students`
+--
+
+CREATE TABLE `students` (
+  `student_id` int(11) NOT NULL,
+  `registration_number` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `program_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `password_hash` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`student_id`, `registration_number`, `name`, `email`, `phone_number`, `program_id`, `created_at`, `password_hash`) VALUES
+(1, 'CS001', 'John Doe', 'john.doe@mzuni.ac.mw', '0888888888', 1, '2024-10-04 12:32:50', '0e55666a4ad822e0e34299df3591d979'),
+(2, 'MATH002', 'Jane Smith', 'jane.smith@mzuni.ac.mw', '0999999999', 2, '2024-10-04 12:32:50', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subjects`
+--
+
+CREATE TABLE `subjects` (
+  `subject_id` int(11) NOT NULL,
+  `subject_name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `subjects`
+--
+
+INSERT INTO `subjects` (`subject_id`, `subject_name`, `description`) VALUES
+(1, 'Data Structures', 'Course on data structures and algorithms'),
+(2, 'Calculus', 'Course on differential calculus');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tutors`
+--
+
+CREATE TABLE `tutors` (
+  `tutor_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `password_hash` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutors`
+--
+
+INSERT INTO `tutors` (`tutor_id`, `name`, `email`, `phone_number`, `created_at`, `password_hash`) VALUES
+(1, 'Dr. John Taylor', 'jtaylor@mzuni.ac.mw', '0777777777', '2024-10-04 12:32:50', ''),
+(2, 'Dr. Jane Wilson', 'jwilson@mzuni.ac.mw', '0666666666', '2024-10-04 12:32:50', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tutor_expertise`
+--
+
+CREATE TABLE `tutor_expertise` (
+  `tutor_expertise_id` int(11) NOT NULL,
+  `tutor_id` int(11) DEFAULT NULL,
+  `expertise_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutor_expertise`
+--
+
+INSERT INTO `tutor_expertise` (`tutor_expertise_id`, `tutor_id`, `expertise_id`) VALUES
 (1, 1, 1),
 (2, 2, 2);
 
-INSERT INTO Roles (role_name) VALUES
-('Student'),
-('Tutor'),
-('Admin');
+-- --------------------------------------------------------
 
-INSERT INTO User_Roles (user_id, role_id) VALUES
-(1, 1),
-(2, 2),
-(1, 3),
-(2, 3);
+--
+-- Table structure for table `tutor_qualifications`
+--
+
+CREATE TABLE `tutor_qualifications` (
+  `tutor_qualification_id` int(11) NOT NULL,
+  `tutor_id` int(11) DEFAULT NULL,
+  `qualification_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutor_qualifications`
+--
+
+INSERT INTO `tutor_qualifications` (`tutor_qualification_id`, `tutor_id`, `qualification_id`) VALUES
+(1, 1, 1),
+(2, 2, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_roles`
+--
+
+CREATE TABLE `user_roles` (
+  `user_role_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+INSERT INTO `user_roles` (`user_role_id`, `user_id`, `role_id`, `created_at`) VALUES
+(1, 1, 1, '2024-10-04 12:32:53'),
+(2, 2, 2, '2024-10-04 12:32:53'),
+(3, 1, 3, '2024-10-04 12:32:53'),
+(4, 2, 3, '2024-10-04 12:32:53');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`admin_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `availability`
+--
+ALTER TABLE `availability`
+  ADD PRIMARY KEY (`availability_id`),
+  ADD KEY `tutor_id` (`tutor_id`);
+
+--
+-- Indexes for table `expertise`
+--
+ALTER TABLE `expertise`
+  ADD PRIMARY KEY (`expertise_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`feedback_id`),
+  ADD KEY `session_id` (`session_id`);
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`message_id`),
+  ADD KEY `sender_id` (`sender_id`),
+  ADD KEY `receiver_id` (`receiver_id`);
+
+--
+-- Indexes for table `programs`
+--
+ALTER TABLE `programs`
+  ADD PRIMARY KEY (`program_id`);
+
+--
+-- Indexes for table `qualifications`
+--
+ALTER TABLE `qualifications`
+  ADD PRIMARY KEY (`qualification_id`);
+
+--
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`role_id`);
+
+--
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`session_id`),
+  ADD KEY `tutor_id` (`tutor_id`),
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `subject_id` (`subject_id`),
+  ADD KEY `feedback_id` (`feedback_id`),
+  ADD KEY `status` (`status`);
+
+--
+-- Indexes for table `session_bookings`
+--
+ALTER TABLE `session_bookings`
+  ADD PRIMARY KEY (`booking_id`),
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `tutor_id` (`tutor_id`),
+  ADD KEY `session_id` (`session_id`);
+
+--
+-- Indexes for table `status_lookup`
+--
+ALTER TABLE `status_lookup`
+  ADD PRIMARY KEY (`status_id`);
+
+--
+-- Indexes for table `students`
+--
+ALTER TABLE `students`
+  ADD PRIMARY KEY (`student_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `program_id` (`program_id`);
+
+--
+-- Indexes for table `subjects`
+--
+ALTER TABLE `subjects`
+  ADD PRIMARY KEY (`subject_id`);
+
+--
+-- Indexes for table `tutors`
+--
+ALTER TABLE `tutors`
+  ADD PRIMARY KEY (`tutor_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `tutor_expertise`
+--
+ALTER TABLE `tutor_expertise`
+  ADD PRIMARY KEY (`tutor_expertise_id`),
+  ADD KEY `tutor_id` (`tutor_id`),
+  ADD KEY `expertise_id` (`expertise_id`);
+
+--
+-- Indexes for table `tutor_qualifications`
+--
+ALTER TABLE `tutor_qualifications`
+  ADD PRIMARY KEY (`tutor_qualification_id`),
+  ADD KEY `tutor_id` (`tutor_id`),
+  ADD KEY `qualification_id` (`qualification_id`);
+
+--
+-- Indexes for table `user_roles`
+--
+ALTER TABLE `user_roles`
+  ADD PRIMARY KEY (`user_role_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `role_id` (`role_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `availability`
+--
+ALTER TABLE `availability`
+  MODIFY `availability_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `expertise`
+--
+ALTER TABLE `expertise`
+  MODIFY `expertise_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `programs`
+--
+ALTER TABLE `programs`
+  MODIFY `program_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `qualifications`
+--
+ALTER TABLE `qualifications`
+  MODIFY `qualification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `sessions`
+--
+ALTER TABLE `sessions`
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `session_bookings`
+--
+ALTER TABLE `session_bookings`
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `status_lookup`
+--
+ALTER TABLE `status_lookup`
+  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `students`
+--
+ALTER TABLE `students`
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `subjects`
+--
+ALTER TABLE `subjects`
+  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tutors`
+--
+ALTER TABLE `tutors`
+  MODIFY `tutor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tutor_expertise`
+--
+ALTER TABLE `tutor_expertise`
+  MODIFY `tutor_expertise_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tutor_qualifications`
+--
+ALTER TABLE `tutor_qualifications`
+  MODIFY `tutor_qualification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `user_roles`
+--
+ALTER TABLE `user_roles`
+  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `availability`
+--
+ALTER TABLE `availability`
+  ADD CONSTRAINT `availability_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`);
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`session_id`);
+
+--
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `students` (`student_id`),
+  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `tutors` (`tutor_id`);
+
+--
+-- Constraints for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
+  ADD CONSTRAINT `sessions_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
+  ADD CONSTRAINT `sessions_ibfk_3` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`),
+  ADD CONSTRAINT `sessions_ibfk_4` FOREIGN KEY (`feedback_id`) REFERENCES `feedback` (`feedback_id`),
+  ADD CONSTRAINT `sessions_ibfk_5` FOREIGN KEY (`status`) REFERENCES `status_lookup` (`status_id`);
+
+--
+-- Constraints for table `session_bookings`
+--
+ALTER TABLE `session_bookings`
+  ADD CONSTRAINT `session_bookings_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
+  ADD CONSTRAINT `session_bookings_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
+  ADD CONSTRAINT `session_bookings_ibfk_3` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`session_id`);
+
+--
+-- Constraints for table `students`
+--
+ALTER TABLE `students`
+  ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`program_id`) REFERENCES `programs` (`program_id`);
+
+--
+-- Constraints for table `tutor_expertise`
+--
+ALTER TABLE `tutor_expertise`
+  ADD CONSTRAINT `tutor_expertise_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
+  ADD CONSTRAINT `tutor_expertise_ibfk_2` FOREIGN KEY (`expertise_id`) REFERENCES `expertise` (`expertise_id`);
+
+--
+-- Constraints for table `tutor_qualifications`
+--
+ALTER TABLE `tutor_qualifications`
+  ADD CONSTRAINT `tutor_qualifications_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`),
+  ADD CONSTRAINT `tutor_qualifications_ibfk_2` FOREIGN KEY (`qualification_id`) REFERENCES `qualifications` (`qualification_id`);
+
+--
+-- Constraints for table `user_roles`
+--
+ALTER TABLE `user_roles`
+  ADD CONSTRAINT `user_roles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `admins` (`admin_id`),
+  ADD CONSTRAINT `user_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
