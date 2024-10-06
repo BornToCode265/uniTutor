@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 // material-ui
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
@@ -28,14 +26,15 @@ import AnimateButton from 'components/@extended/AnimateButton';
 // assets
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
+import { useAuth } from 'contexts/auth-reducer/AuthContext';
 
 // ============================|| JWT - LOGIN ||============================ //
 
 export default function AuthLogin({ isDemo = false }) {
   const [checked, setChecked] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
-
   const navigate = useNavigate(); // Hook for navigation
+  const { login } = useAuth(); // Access login function from context
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -43,6 +42,23 @@ export default function AuthLogin({ isDemo = false }) {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleLogin = async (values, { setErrors, setStatus, setSubmitting }) => {
+    const { email, password } = values;
+    const result = await login(email, password);
+
+    if (result.success) {
+      setStatus({ success: true });
+      console.log('Login successful');
+      navigate('/dashboard'); // Redirect to dashboard after login success
+    } else {
+      setStatus({ success: false });
+      setErrors({ submit: result.message });
+      console.log('Login failed', result.message);
+    }
+
+    setSubmitting(false);
   };
 
   return (
@@ -57,36 +73,7 @@ export default function AuthLogin({ isDemo = false }) {
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            const response = await axios.get('http://localhost/uniTutor/backend/auth/admin/', {
-              params: {
-                email: values.email,
-                password: values.password
-              }
-            });
-
-            // Check response and handle success/failure
-            if (response.data) {
-              setStatus({ success: true });
-              console.log('Login successful');
-
-              // Redirect to dashboard after login success
-              //navigate('/');
-            } else {
-              // Failed login
-              setStatus({ success: false });
-              setErrors({ submit: 'Invalid email or password' });
-              console.log('Login failed', response.data);
-            }
-          } catch (error) {
-            console.error('Login error:', error);
-            setStatus({ success: false });
-            setErrors({ submit: 'An error occurred. Please try again later.' });
-          } finally {
-            setSubmitting(false);
-          }
-        }}
+        onSubmit={handleLogin} // Use the handleLogin function
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
