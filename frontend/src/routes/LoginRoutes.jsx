@@ -3,10 +3,10 @@ import { lazy } from 'react';
 // project import
 import Loadable from 'components/Loadable';
 import MinimalLayout from 'layout/MinimalLayout';
+import NotFoundPage from 'pages/404';
 
 // render - login
 const AuthLogin = Loadable(lazy(() => import('pages/authentication/login')));
-const AuthRegister = Loadable(lazy(() => import('pages/authentication/register')));
 
 // ==============================|| AUTH ROUTING ||============================== //
 
@@ -19,8 +19,8 @@ const LoginRoutes = {
       element: <AuthLogin />
     },
     {
-      path: '/register',
-      element: <AuthRegister />
+      path: '*',
+      element: <NotFoundPage /> // 404 Route
     }
   ]
 };

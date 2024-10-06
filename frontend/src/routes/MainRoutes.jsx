@@ -3,10 +3,14 @@ import { lazy } from 'react';
 // project import
 import Loadable from 'components/Loadable';
 import Dashboard from 'layout/Dashboard';
-import Users from 'pages/Admin/Students';
 import Admins from 'pages/Admin/Admins';
 import Students from 'pages/Admin/Students';
 import Tutors from 'pages/Admin/Tutors';
+import Login from 'pages/authentication/login';
+import AuthRegister from 'pages/authentication/auth-forms/AuthRegister';
+import AdminDashboard from 'pages/Admin/AdminDashboard';
+import TutorDashboard from 'pages/Tutor/TutorDashboard';
+import StudentDashboard from 'pages/Student/StudentDashboard';
 
 const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
@@ -32,12 +36,7 @@ const MainRoutes = {
     },
     {
       path: 'dashboard',
-      children: [
-        {
-          path: 'default',
-          element: <DashboardDefault />
-        }
-      ]
+      element: <DashboardDefault />
     },
     {
       path: 'sample-page',
@@ -60,8 +59,39 @@ const MainRoutes = {
       element: <Students />
     },
     {
+      path: '/register',
+      element: <AuthRegister />
+    },
+    {
       path: 'tutors',
       element: <Tutors />
+    },
+    {
+      path: 'admin',
+      children: [
+        {
+          path: 'dashboard',
+          element: <AdminDashboard />
+        }
+      ]
+    },
+    {
+      path: 'tutor',
+      children: [
+        {
+          path: 'dashboard',
+          element: <TutorDashboard />
+        }
+      ]
+    },
+    {
+      path: 'student',
+      children: [
+        {
+          path: 'dashboard',
+          element: <StudentDashboard />
+        }
+      ]
     }
   ]
 };

@@ -1,8 +1,7 @@
-import React, { createContext, useReducer, useContext, useEffect } from 'react';
+import React, { createContext, useReducer, useContext, useEffect, useState } from 'react';
 import axios from 'axios'; // Import axios
 import auth, { initialState } from './auth';
 import { LOGIN, LOGOUT, REGISTER } from './actions';
-import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
@@ -24,17 +23,48 @@ export const AuthProvider = ({ children }) => {
 
   // Login action with axios request
   const login = async (credentials, { setErrors, setStatus, setSubmitting }) => {
+    let url = ''; // Temporary variable to hold the login URL
+
+    switch (credentials.loginType) {
+      case 'tutor':
+        console.log('logging in as tutor');
+        url = 'http://localhost/uniTutor/backend/auth/tutor/';
+        break;
+
+      case 'admin':
+        console.log('logging in as admin');
+        url = 'http://localhost/uniTutor/backend/auth/admin/';
+        break;
+
+      default:
+        console.log('logging in as student');
+        url = 'http://localhost/uniTutor/backend/auth/';
+        break;
+    }
+
+    if (!url) {
+      setStatus({ success: false, message: 'Invalid login type' });
+      console.log('Invalid login type: ' + url);
+      return;
+    }
+
     try {
-      const response = await axios.get('http://localhost/uniTutor/backend/auth/admin/', {
+      const response = await axios.get(url, {
         params: {
           email: credentials.email,
           password: credentials.password
         }
       });
+      console.log(response);
 
       // Check response and handle success/failure
       if (response.data) {
-        const userData = response.data; // Get the user data from response
+        const userData = {
+          ...response.data, // Include the user data from the response
+          loginType: credentials.loginType, // Add loginType to user data
+          email: credentials.email
+        };
+        //console.log(userData);
 
         // Store user data in localStorage
         localStorage.setItem('user', JSON.stringify(userData));
@@ -44,10 +74,12 @@ export const AuthProvider = ({ children }) => {
 
         // Set status to success
         setStatus({ success: true });
+        return { success: 'Success' };
       } else {
         // If the response is invalid, set error
         setStatus({ success: false });
         setErrors({ submit: 'Invalid email or password' });
+        return { success: 'Failed' };
       }
     } catch (error) {
       // Handle errors
