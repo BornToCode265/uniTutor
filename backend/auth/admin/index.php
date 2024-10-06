@@ -19,33 +19,29 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 
 switch ($method) {
-  case 'GET':
- 
-
-if (isset($_GET['email']) && isset($_GET['password'])) {
+case 'GET':
+    if (isset($_GET['email']) && isset($_GET['password'])) {
         $email = $_GET['email'];
         $password = $_GET['password'];
 
+        $stmt = $pdo->prepare("SELECT * FROM admins WHERE email = :email");
 
-
-  $stmt = $pdo->query("SELECT * FROM admins WHERE email= $email ");
-        
-        $admin = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+      
         http_response_code(200);
         
-        $result = $admin[0];
+      
+        $stmt->execute([':email' => $email]);
+        $admin = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-if (md5($password) == $result['password_hash']) {
-    echo json_encode(true);
-} else {
-    echo json_encode(false);
-}
-
-  }else{
-    echo json_encode(['error' => 'no data passed']);
-  }
+    
+        if (md5($password) === $admin[0]['password_hash'] ) {
+            echo json_encode(true);
+        } else {
+            echo json_encode(false);
+        }
+    } else {
+        echo json_encode(['error' => 'no data passed']);
+    }
     break;
 
        default:
