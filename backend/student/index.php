@@ -19,30 +19,27 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 
 switch ($method) {
-case 'GET':
-    if (isset($_GET['student_id'])) {
-        $student_id = $_GET['student_id'];
+  case 'GET':
+ 
+
+
+        $email = $_GET['email'];
+       
+  $stmt = $pdo->query("SELECT * FROM students  WHERE email= $email");
         
-        $stmt = $pdo->prepare("SELECT s.*, p.program_name, p.description
-                              FROM students s
-                              LEFT JOIN programs p ON s.program_id = p.program_id
-                              WHERE s.student_id = :student_id");
+        $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        $stmt->execute([':student_id' => $student_id]);
+        http_response_code(200);
         
-        $student = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($student) {
-            http_response_code(200);
-            echo json_encode($student);
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Student not found']);
-        }
-    } else {
-        echo json_encode(['error' => 'No student_id provided']);
-    }
-    break;
+        $result = $students[0];
+
+
+
+    echo json_encode($result);
+
+echo json_encode(['error' => 'no data passed']);
+
+break;
 
        default:
         http_response_code(405);
