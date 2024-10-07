@@ -52,13 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 // GET request handler for fetching a single admin by email
-if ($_SERVER['REQUEST_METHOD'] === 'GET' ) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['email'])) {
     try {
-     
-        $stmt = $pdo->prepare("SELECT * FROM admins");
-        $stmt->execute();
+        $email = $_GET['email'];
+        $stmt = $pdo->prepare("SELECT * FROM admins WHERE email = :email");
+        $stmt->execute([':email' => $email]);
         
-        $admin = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($admin) {
             http_response_code(200);
