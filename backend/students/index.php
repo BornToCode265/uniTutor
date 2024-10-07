@@ -7,7 +7,6 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 // Create a PDO instance
-
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Function to handle errors
@@ -17,32 +16,35 @@ function handleError($message) {
     exit;
 }
 
-// POST request handler for creating a new tutor
+// POST request handler for creating a new student
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['name']) || !isset($data['email']) || !isset($data['phone_number']) ||
-        !isset($data['created_at']) || !isset($data['password_hash'])) {
+    if (!isset($data['registration_number']) || !isset($data['name']) || !isset($data['email']) || 
+        !isset($data['phone_number']) || !isset($data['program_id']) || !isset($data['created_at']) || 
+        !isset($data['password_hash'])) {
         handleError("Missing required fields");
     }
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO tutors (name, email, phone_number, created_at, password_hash)
-                                VALUES (:name, :email, :phone_number, :created_at, :password_hash)");
-        
+        $stmt = $pdo->prepare("INSERT INTO students (registration_number, name, email, phone_number, program_id, created_at, password_hash)
+                                VALUES (:registration_number, :name, :email, :phone_number, :program_id, :created_at, :password_hash)");
+
         $stmt->execute([
+            ':registration_number' => $data['registration_number'],
             ':name' => $data['name'],
             ':email' => $data['email'],
             ':phone_number' => $data['phone_number'],
+            ':program_id' => $data['program_id'],
             ':created_at' => $data['created_at'],
             ':password_hash' => $data['password_hash']
         ]);
 
         if ($stmt->rowCount() > 0) {
             http_response_code(201);
-            echo json_encode(['message' => 'Tutor inserted successfully']);
+            echo json_encode(['message' => 'Student inserted successfully']);
         } else {
-            handleError("Failed to insert tutor");
+            handleError("Failed to insert student");
         }
     } catch (PDOException $e) {
         handleError("Database error: " . $e->getMessage());
@@ -52,15 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pdo = null;
 }
 
-// GET request handler for fetching all tutors
+// GET request handler for fetching all students
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        $stmt = $pdo->query("SELECT * FROM tutors ORDER BY name");
+        $stmt = $pdo->query("SELECT * FROM students ORDER BY registration_number");
         
-        $tutors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         http_response_code(200);
-        echo json_encode($tutors);
+        echo json_encode($students);
     } catch (PDOException $e) {
         handleError("Database error: " . $e->getMessage());
     }
@@ -69,21 +71,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pdo = null;
 }
 
-// GET request handler for fetching a single tutor by name
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['name'])) {
+// GET request handler for fetching a single student by registration_number
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['registration_number'])) {
     try {
-        $name = $_GET['name'];
-        $stmt = $pdo->prepare("SELECT * FROM tutors WHERE name = :name");
-        $stmt->execute([':name' => $name]);
+        $registration_number = $_GET['registration_number'];
+        $stmt = $pdo->prepare("SELECT * FROM students WHERE registration_number = :registration_number");
+        $stmt->execute([':registration_number' => $registration_number]);
         
-        $tutor = $stmt->fetch(PDO::FETCH_ASSOC);
+        $student = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if ($tutor) {
+        if ($student) {
             http_response_code(200);
-            echo json_encode($tutor);
+            echo json_encode($student);
         } else {
             http_response_code(404);
-            echo json_encode(['message' => 'Tutor not found']);
+            echo json_encode(['message' => 'Student not found']);
         }
     } catch (PDOException $e) {
         handleError("Database error: " . $e->getMessage());
@@ -93,32 +95,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['name'])) {
     $pdo = null;
 }
 
-// PUT request handler for updating a tutor
-if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['name'])) {
+// PUT request handler for updating a student
+if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['registration_number'])) {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['name']) || !isset($data['email']) || !isset($data['phone_number']) ||
-        !isset($data['created_at']) || !isset($data['password_hash'])) {
+    if (!isset($data['registration_number']) || !isset($data['name']) || !isset($data['email']) || 
+        !isset($data['phone_number']) || !isset($data['program_id']) || !isset($data['created_at']) || 
+        !isset($data['password_hash'])) {
         handleError("Missing required fields");
     }
 
     try {
-        $name = $_GET['name'];
-        $stmt = $pdo->prepare("UPDATE tutors SET name = :name, email = :email, phone_number = :phone_number, created_at = :created_at, password_hash = :password_hash WHERE name = :name");
-        
+        $registration_number = $_GET['registration_number'];
+        $stmt = $pdo->prepare("UPDATE students SET registration_number = :registration_number, name = :name, email = :email, phone_number = :phone_number, program_id = :program_id, created_at = :created_at, password_hash = :password_hash WHERE registration_number = :registration_number");
+
         $stmt->execute([
-            ':name' => $name,
+            ':registration_number' => $registration_number,
+            ':name' => $data['name'],
             ':email' => $data['email'],
             ':phone_number' => $data['phone_number'],
+            ':program_id' => $data['program_id'],
             ':created_at' => $data['created_at'],
             ':password_hash' => $data['password_hash']
         ]);
 
         if ($stmt->rowCount() > 0) {
             http_response_code(200);
-            echo json_encode(['message' => 'Tutor updated successfully']);
+            echo json_encode(['message' => 'Student updated successfully']);
         } else {
-            handleError("Failed to update tutor");
+            handleError("Failed to update student");
         }
     } catch (PDOException $e) {
         handleError("Database error: " . $e->getMessage());
@@ -128,19 +133,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['name'])) {
     $pdo = null;
 }
 
-// DELETE request handler for deleting a tutor
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_GET['name'])) {
+// DELETE request handler for deleting a student
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_GET['registration_number'])) {
     try {
-        $name = $_GET['name'];
-        $stmt = $pdo->prepare("DELETE FROM tutors WHERE name = :name");
-        $stmt->execute([':name' => $name]);
+        $registration_number = $_GET['registration_number'];
+        $stmt = $pdo->prepare("DELETE FROM students WHERE registration_number = :registration_number");
+        $stmt->execute([':registration_number' => $registration_number]);
 
         if ($stmt->rowCount() > 0) {
             http_response_code(200);
-            echo json_encode(['message' => 'Tutor deleted successfully']);
+            echo json_encode(['message' => 'Student deleted successfully']);
         } else {
             http_response_code(404);
-            echo json_encode(['message' => 'Tutor not found']);
+            echo json_encode(['message' => 'Student not found']);
         }
     } catch (PDOException $e) {
         handleError("Database error: " . $e->getMessage());
