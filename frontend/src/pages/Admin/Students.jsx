@@ -1,7 +1,7 @@
-import UsersTable from './UsersTable';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import DataDisplayTable from 'components/DataDisplayTable';
 
 const columns = [
   { id: 'id', align: 'left', disablePadding: false, label: 'ID' },
@@ -32,7 +32,7 @@ function Students() {
           Add New User
         </Button>
       </Link>
-      <UsersTable columns={columns} rows={rows} />
+      <DataDisplayTable columns={columns} rows={rows} />
     </Box>
   );
 }

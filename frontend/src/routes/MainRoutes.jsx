@@ -10,6 +10,8 @@ import AdminDashboard from 'pages/Admin/AdminDashboard';
 import TutorDashboard from 'pages/Tutor/TutorDashboard';
 import StudentDashboard from 'pages/Student/StudentDashboard';
 import Register from 'pages/authentication/register';
+import Programs from 'pages/Admin/Programs';
+import Subjects from 'pages/Admin/Subjects';
 
 const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
@@ -71,6 +73,14 @@ const MainRoutes = {
         {
           path: 'dashboard',
           element: <AdminDashboard />
+        },
+        {
+          path: 'programs',
+          element: <Programs />
+        },
+        {
+          path: 'subjects',
+          element: <Subjects />
         }
       ]
     },
