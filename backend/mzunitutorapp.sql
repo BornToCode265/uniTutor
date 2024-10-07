@@ -7,6 +7,10 @@
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
+CREATE DATABASE IF NOT EXISTS mzuni_tutoring_app;
+
+USE mzuni_tutoring_app;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
