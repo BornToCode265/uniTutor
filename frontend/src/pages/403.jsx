@@ -1,15 +1,13 @@
-// 404Page.js
-
 import React from 'react';
 import { Button, Result } from 'antd';
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const NotFoundPage = () => {
+const NotAuthorizedPage = () => {
   const navigate = useNavigate();
 
   const goBackHome = () => {
-    navigate('/');
+    navigate(-1);
   };
 
   return (
@@ -24,15 +22,15 @@ const NotFoundPage = () => {
       }}
     >
       <Result
-        status="404"
+        status="403"
         title={
           <Typography variant="h3" component="h1" color="primary" sx={{ mb: 2 }}>
-            404 - Page Not Found
+            403 - Not Authorized
           </Typography>
         }
         subTitle={
           <Typography variant="body1" color="textSecondary">
-            Sorry, the page you visited does not exist.
+            Sorry, you do not have permission to access this page.
           </Typography>
         }
         extra={
@@ -45,4 +43,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default NotAuthorizedPage;

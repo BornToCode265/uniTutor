@@ -12,6 +12,7 @@ import StudentDashboard from 'pages/Student/StudentDashboard';
 import Register from 'pages/authentication/register';
 import Programs from 'pages/Admin/Programs';
 import Subjects from 'pages/Admin/Subjects';
+import RouteGuard from 'components/guards/RouteGuard';
 
 const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
@@ -69,6 +70,7 @@ const MainRoutes = {
     },
     {
       path: 'admin',
+      element: <RouteGuard mode={'admin'} />,
       children: [
         {
           path: 'dashboard',
