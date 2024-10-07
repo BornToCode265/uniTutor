@@ -7,7 +7,7 @@ header('Content-Type: *');
 
 header('Access-Control-Allow-Heagers: *');
 
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Access-Control-Allow-Methods: * ");
 header("Access-Control-Allow-Headers: * ");
 
 
@@ -19,6 +19,44 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 
 switch ($method) {
+case 'POST':
+        $data = json_decode(file_get_contents('php://input'), true);
+    
+        if (!isset($data['email']) || !isset($data['password'])) {
+            echo json_encode(['error' => 'Missing email or password']);
+            break;
+        }
+    
+        $email = $data['email'];
+        $password = $data['password'];
+    
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM students WHERE email = :email");
+            $stmt->execute([':email' => $email]);
+    
+            $student = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if (!$student) {
+                echo json_encode(['error' => 'User not found']);
+                break;
+            }
+    
+            if (md5($password) !== $student['password_hash']) {
+                echo json_encode(['error' => 'Incorrect password']);
+                break;
+            }
+    
+            http_response_code(200);
+            echo json_encode(true);
+    
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+        }
+        break;
+
+
+
   case 'GET':
  
 
@@ -47,6 +85,7 @@ if (md5($password) == $result['password_hash']) {
     echo json_encode(['error' => 'no data passed']);
   }
     break;
+
 
        default:
         http_response_code(405);
