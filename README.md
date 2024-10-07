@@ -65,3 +65,11 @@ If everything is set up correctly, you should see a JSON response similar to thi
 ### Admin Authentication
 <img src="adminauth.png" alt="Admin Authentication" width="300" height="200" align="centre">
 <br />
+
+### Tutor
+<img src="tutor.png" alt="Admin Authentication" width="300" height="200" align="centre">
+<br />
+
+### Student
+<img src="student.png" alt="Admin Authentication" width="300" height="200" align="centre">
+<br />
