@@ -7,40 +7,40 @@ import DataDisplayTable from 'components/DataDisplayTable';
 
 const columns = [
   { id: 'id', align: 'left', disablePadding: false, label: 'ID' },
-  { id: 'name', align: 'left', disablePadding: true, label: 'Name' },
-  { id: 'email', align: 'left', disablePadding: false, label: 'Email' }
+  { id: 'name', align: 'left', disablePadding: true, label: 'Subject Name' },
+  { id: 'description', align: 'left', disablePadding: false, label: 'Description' }
 ];
 
-// Render the UsersTable with fetched data
-function Admins() {
+// Render the UsersTable
+function Subjects() {
   const [rows, setRows] = useState([]); // State to store the fetched rows
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState(null); // State to manage error status
 
   useEffect(() => {
     // Fetch admins from the API
-    const fetchAdmins = async () => {
+    const fetchSubjects = async () => {
       try {
-        const response = await axios.get('http://localhost/uniTutor/backend/admins/');
+        const response = await axios.get('http://localhost/uniTutor/backend/subjects/');
         const data = response.data;
 
         // Format the data to match the expected rows format for UsersTable
-        const formattedRows = data.map((admin) => ({
-          id: admin.admin_id,
-          name: admin.name,
-          email: admin.email
+        const formattedRows = data.map((subject) => ({
+          id: subject.subject_id,
+          name: subject.subject_name,
+          description: subject.description
         }));
 
         setRows(formattedRows); // Update the rows state with formatted data
         setLoading(false); // Set loading to false once data is fetched
       } catch (err) {
-        console.error('Error fetching admin data:', err);
-        setError('Failed to load admins.');
+        console.error('Error fetching subject data:', err);
+        setError('Failed to load subjects.');
         setLoading(false); // Set loading to false even if there's an error
       }
     };
 
-    fetchAdmins();
+    fetchSubjects();
   }, []);
 
   if (loading) {
@@ -50,12 +50,11 @@ function Admins() {
   if (error) {
     return <div>{error}</div>; // Show error message if there's an error
   }
-
   return (
     <Box>
-      <Link href="/register" underline="none">
+      <Link href="#" underline="none">
         <Button variant="contained" color="primary">
-          Add New User
+          Add Subject
         </Button>
       </Link>
       <DataDisplayTable columns={columns} rows={rows} />
@@ -63,4 +62,4 @@ function Admins() {
   );
 }
 
-export default Admins;
+export default Subjects;

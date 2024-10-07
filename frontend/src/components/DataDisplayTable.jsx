@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 // material-ui
 import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,7 +11,7 @@ import Box from '@mui/material/Box';
 
 // ==============================|| USERS TABLE - HEADER ||============================== //
 
-function UsersTableHead({ columns }) {
+function DataDisplayTableHead({ columns }) {
   return (
     <TableHead>
       <TableRow>
@@ -28,7 +27,7 @@ function UsersTableHead({ columns }) {
 
 // ==============================|| USERS TABLE ||============================== //
 
-export default function UsersTable({ columns, rows }) {
+export default function DataDisplayTable({ columns, rows }) {
   return (
     <Box>
       <TableContainer
@@ -42,7 +41,7 @@ export default function UsersTable({ columns, rows }) {
         }}
       >
         <Table aria-labelledby="tableTitle">
-          <UsersTableHead columns={columns} />
+          <DataDisplayTableHead columns={columns} />
           <TableBody>
             {rows.map((row, index) => (
               <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row.id}>
@@ -60,8 +59,8 @@ export default function UsersTable({ columns, rows }) {
   );
 }
 
-UsersTableHead.propTypes = { columns: PropTypes.array.isRequired };
-UsersTable.propTypes = {
+DataDisplayTableHead.propTypes = { columns: PropTypes.array.isRequired };
+DataDisplayTable.propTypes = {
   columns: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired
 };

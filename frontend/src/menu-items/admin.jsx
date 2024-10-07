@@ -19,21 +19,21 @@ const admin = {
       id: 'admin-Programs',
       title: 'Programs',
       type: 'item',
-      url: '/programs',
+      url: 'admin/programs',
       icon: icons.ProjectOutlined
     },
     {
       id: 'admin-Subjects',
       title: 'Subjects',
       type: 'item',
-      url: '/subjects',
+      url: 'admin/subjects',
       icon: icons.BookOutlined
     },
     {
       id: 'admin-Sessions',
       title: 'Sessions',
       type: 'item',
-      url: '/sessions',
+      url: 'admin/sessions',
       icon: icons.ScheduleOutlined
     }
   ]
