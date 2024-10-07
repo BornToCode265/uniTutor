@@ -26,7 +26,7 @@ const pages = {
       id: 'register1',
       title: 'Register',
       type: 'item',
-      url: '/register',
+      url: '/admin/register',
       icon: icons.ProfileOutlined,
       target: true
     }

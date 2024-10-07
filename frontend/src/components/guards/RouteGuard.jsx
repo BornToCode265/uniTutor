@@ -1,10 +1,11 @@
 import { useAuth } from 'contexts/auth-reducer/AuthContext';
 import NotAuthorizedPage from 'pages/403';
 import NotFoundPage from 'pages/404';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const RouteGuard = ({ mode }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   console.log(user);
   if (!user) {
@@ -12,7 +13,7 @@ const RouteGuard = ({ mode }) => {
   }
 
   if (user.loginType !== mode) {
-    return <NotAuthorizedPage />;
+    navigate('/notallowed');
   }
   return <Outlet />;
 };

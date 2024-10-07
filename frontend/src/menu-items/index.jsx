@@ -9,7 +9,7 @@ import admin from './admin';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, users, admin, pages, utilities, support]
+  items: [dashboard, users, admin, utilities, support]
 };
 
 export default menuItems;

@@ -21,21 +21,21 @@ const users = {
       id: 'users-Admins',
       title: 'Admins',
       type: 'item',
-      url: '/admins',
+      url: '/admin/admins',
       icon: icons.RiAdminLine // Correctly rendering the icon
     },
     {
       id: 'users-Tutors',
       title: 'Tutors',
       type: 'item',
-      url: '/tutors',
+      url: '/admin/tutors',
       icon: icons.PiChalkboardTeacherThin // Correctly rendering the icon
     },
     {
       id: 'users-Students',
       title: 'Students',
       type: 'item',
-      url: '/students',
+      url: '/admin/students',
       icon: icons.UserOutlined // Render Ant Design icon as a component
     }
   ]

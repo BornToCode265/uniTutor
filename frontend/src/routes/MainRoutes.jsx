@@ -13,6 +13,9 @@ import Register from 'pages/authentication/register';
 import Programs from 'pages/Admin/Programs';
 import Subjects from 'pages/Admin/Subjects';
 import RouteGuard from 'components/guards/RouteGuard';
+import UserDetails from 'pages/Admin/UserDetails';
+import ProgramDetails from 'pages/ProgramDetails';
+import SubjectDetails from 'pages/SubjectDetails';
 
 const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
@@ -53,20 +56,12 @@ const MainRoutes = {
       element: <Typography />
     },
     {
-      path: 'admins',
-      element: <Admins />
+      path: 'program',
+      element: <ProgramDetails />
     },
     {
-      path: 'students',
-      element: <Students />
-    },
-    {
-      path: 'register',
-      element: <Register />
-    },
-    {
-      path: 'tutors',
-      element: <Tutors />
+      path: 'subject',
+      element: <SubjectDetails />
     },
     {
       path: 'admin',
@@ -83,6 +78,27 @@ const MainRoutes = {
         {
           path: 'subjects',
           element: <Subjects />
+        },
+        ,
+        {
+          path: 'admins',
+          element: <Admins />
+        },
+        {
+          path: 'students',
+          element: <Students />
+        },
+        {
+          path: 'register',
+          element: <Register />
+        },
+        {
+          path: 'tutors',
+          element: <Tutors />
+        },
+        {
+          path: 'user',
+          element: <UserDetails />
         }
       ]
     },
