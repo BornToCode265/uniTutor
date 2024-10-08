@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from '@mui/material/Link';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import DataDisplayTable from 'components/DataDisplayTable';
 import { backendUrl } from 'config';
-import { IconButton } from '@mui/material';
+import { IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { DeleteOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'antd';
 
 // Render the UsersTable
 function Students() {
@@ -15,10 +15,13 @@ function Students() {
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState(null); // State to manage error status
 
+  const [open, setOpen] = useState(false); // State to manage the delete confirmation modal
+  const [selectedReg, setSelectedReg] = useState(null); // State to store selected registration number for deletion
+
   const navigate = useNavigate(); // React Router hook for navigation
 
   useEffect(() => {
-    // Fetch admins from the API
+    // Fetch students from the API
     const fetchStudents = async () => {
       try {
         const response = await axios.get(backendUrl + '/students/');
@@ -46,22 +49,34 @@ function Students() {
   }, []);
 
   // Handle the delete action
-  const handleDelete = async (reg) => {
+  const handleDelete = async () => {
     try {
-      const response = await axios.delete(`${backendUrl}/students/?registration_number=${reg}`);
+      await axios.delete(`${backendUrl}/students/?registration_number=${selectedReg}`);
 
-      // Remove the deleted admin from the state
-      setRows((prevRows) => prevRows.filter((row) => row.registration_number !== reg));
+      // Remove the deleted student from the state
+      setRows((prevRows) => prevRows.filter((row) => row.reg !== selectedReg));
+      setOpen(false); // Close the dialog
       alert('User deleted successfully');
     } catch (err) {
-      console.error('Error deleting admin:', err);
+      console.error('Error deleting user:', err);
       alert('Failed to delete user.');
     }
   };
 
-  // Handle the open action (navigate to /admin/user)
+  // Handle open action (navigate to /admin/user)
   const handleOpen = (id) => {
     navigate(`/admin/user?user_id=${id}&userType=student`);
+  };
+
+  // Handle opening of confirmation dialog
+  const confirmDelete = (reg) => {
+    setSelectedReg(reg); // Set selected registration number
+    setOpen(true); // Open the confirmation dialog
+  };
+
+  // Handle closing of dialog
+  const handleClose = () => {
+    setOpen(false); // Close the dialog
   };
 
   const columns = [
@@ -80,7 +95,7 @@ function Students() {
           <IconButton aria-label="open" onClick={() => handleOpen(row.id)}>
             <FolderOpenOutlined />
           </IconButton>
-          <IconButton aria-label="delete" onClick={() => handleDelete(row.registration_number)}>
+          <IconButton aria-label="delete" onClick={() => confirmDelete(row.reg)}>
             <DeleteOutlined />
           </IconButton>
         </div>
@@ -95,14 +110,31 @@ function Students() {
   if (error) {
     return <div>{error}</div>; // Show error message if there's an error
   }
+
   return (
     <Box>
       <Link href="/register" underline="none">
-        <Button variant="contained" color="primary">
+        <Button variant="filled" color="primary">
           Add New User
         </Button>
       </Link>
       <DataDisplayTable columns={columns} rows={rows} />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete this student? This action cannot be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="danger" variant="dashed">
+            Confirm Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

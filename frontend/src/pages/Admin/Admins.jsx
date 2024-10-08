@@ -2,18 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Link from '@mui/material/Link';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import DataDisplayTable from 'components/DataDisplayTable';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 import { backendUrl } from 'config';
 import { DeleteOutlined, FolderOpenOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 
 const Admins = () => {
   const [rows, setRows] = useState([]); // State to store the fetched rows
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState(null); // State to manage error status
+
+  const [open, setOpen] = useState(false); // State to manage the delete confirmation modal
+  const [selectedEmail, setSelectedEmail] = useState(null); // State to store selected email for deletion
 
   const navigate = useNavigate(); // React Router hook for navigation
 
@@ -24,7 +28,7 @@ const Admins = () => {
         const response = await axios.get(backendUrl + '/admins/');
         const data = response.data;
 
-        // Format the data to match the expected rows format for UsersTable
+        // Format the data to match the expected rows format for DataDisplayTable
         const formattedRows = data.map((admin) => ({
           id: admin.admin_id,
           name: admin.name,
@@ -44,11 +48,12 @@ const Admins = () => {
   }, []);
 
   // Handle the delete action
-  const handleDelete = async (email) => {
+  const handleDelete = async () => {
     try {
-      const response = await axios.delete(`${backendUrl}/admins/?email=${email}`);
+      await axios.delete(`${backendUrl}/admins/?email=${selectedEmail}`);
       // Remove the deleted admin from the state
-      setRows((prevRows) => prevRows.filter((row) => row.email !== email));
+      setRows((prevRows) => prevRows.filter((row) => row.email !== selectedEmail));
+      setOpen(false); // Close the dialog
       alert('Admin deleted successfully');
     } catch (err) {
       console.error('Error deleting admin:', err);
@@ -59,6 +64,17 @@ const Admins = () => {
   // Handle the open action (navigate to /admin/user)
   const handleOpen = (email) => {
     navigate(`/admin/user?email=${email}&userType=admin`);
+  };
+
+  // Handle opening of confirmation dialog
+  const confirmDelete = (email) => {
+    setSelectedEmail(email); // Set selected email
+    setOpen(true); // Open the confirmation dialog
+  };
+
+  // Handle closing of dialog
+  const handleClose = () => {
+    setOpen(false); // Close the dialog
   };
 
   // Define columns here and use a function to create the actions column
@@ -76,7 +92,7 @@ const Admins = () => {
           <IconButton aria-label="open" onClick={() => handleOpen(row.email)}>
             <FolderOpenOutlined />
           </IconButton>
-          <IconButton aria-label="delete" onClick={() => handleDelete(row.email)}>
+          <IconButton aria-label="delete" onClick={() => confirmDelete(row.email)}>
             <DeleteOutlined />
           </IconButton>
         </div>
@@ -95,11 +111,27 @@ const Admins = () => {
   return (
     <Box>
       <Link href="/register" underline="none">
-        <Button variant="contained" color="primary">
+        <Button variant="filled" color="primary">
           Add New User
         </Button>
       </Link>
       <DataDisplayTable columns={columns} rows={rows} />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete this admin? This action cannot be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="danger" variant="dashed">
+            Confirm Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
