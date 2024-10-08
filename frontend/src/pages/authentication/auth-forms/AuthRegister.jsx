@@ -29,6 +29,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
+import { backendUrl } from 'config';
 
 // ============================|| JWT - REGISTER ||============================ //
 
@@ -58,7 +59,7 @@ export default function AuthRegister() {
 
     const fetchPrograms = async () => {
       try {
-        const response = await axios.get('http://localhost/uniTutor/backend/programs/');
+        const response = await axios.get(backendUrl + '/programs/');
         setPrograms(response.data); // Store the fetched programs in state
       } catch (error) {
         console.error('Error fetching programs:', error);
@@ -70,10 +71,10 @@ export default function AuthRegister() {
   }, []);
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-    const route = userType === 'admin' ? '/api/admin/register' : userType === 'tutor' ? '/api/tutor/register' : '/api/student/register';
+    const route = userType === 'admin' ? '/admins/' : userType === 'tutor' ? '/tutors/' : '/students/';
 
     try {
-      await axios.post(route, {
+      await axios.post(backendUrl + route, {
         name: values.name,
         email: values.email,
         registration_number: userType === 'student' ? values.registration_number : undefined, // Send registration number if user is student

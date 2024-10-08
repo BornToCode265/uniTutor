@@ -4,6 +4,7 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import DataDisplayTable from 'components/DataDisplayTable';
+import { backendUrl } from 'config';
 
 const columns = [
   { id: 'id', align: 'left', disablePadding: false, label: 'ID' },
@@ -22,7 +23,7 @@ function Tutors() {
     // Fetch admins from the API
     const fetchTutors = async () => {
       try {
-        const response = await axios.get('http://localhost/uniTutor/backend/tutors/');
+        const response = await axios.get(backendUrl + '/tutors/');
         const data = response.data;
 
         // Format the data to match the expected rows format for UsersTable
