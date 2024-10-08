@@ -27,6 +27,7 @@ function Students() {
         // Format the data to match the expected rows format for UsersTable
         const formattedRows = data.map((student) => ({
           id: student.student_id,
+          reg: student.registration_number,
           name: student.name,
           email: student.email,
           phone: student.phone_number
@@ -45,12 +46,12 @@ function Students() {
   }, []);
 
   // Handle the delete action
-  const handleDelete = async (email) => {
+  const handleDelete = async (reg) => {
     try {
-      const response = await axios.delete(`${backendUrl}/students/?email=${email}`);
+      const response = await axios.delete(`${backendUrl}/students/?registration_number=${reg}`);
 
       // Remove the deleted admin from the state
-      setRows((prevRows) => prevRows.filter((row) => row.email !== email));
+      setRows((prevRows) => prevRows.filter((row) => row.registration_number !== reg));
       alert('User deleted successfully');
     } catch (err) {
       console.error('Error deleting admin:', err);
@@ -67,6 +68,7 @@ function Students() {
     { id: 'id', align: 'left', disablePadding: false, label: 'ID' },
     { id: 'name', align: 'left', disablePadding: true, label: 'Name' },
     { id: 'email', align: 'left', disablePadding: false, label: 'Email' },
+    { id: 'reg', align: 'left', disablePadding: false, label: 'Reg. #' },
     { id: 'phone', align: 'left', disablePadding: false, label: 'Phone Number' },
     {
       id: 'actions',
@@ -78,7 +80,7 @@ function Students() {
           <IconButton aria-label="open" onClick={() => handleOpen(row.id)}>
             <FolderOpenOutlined />
           </IconButton>
-          <IconButton aria-label="delete" onClick={() => handleDelete(row.email)}>
+          <IconButton aria-label="delete" onClick={() => handleDelete(row.registration_number)}>
             <DeleteOutlined />
           </IconButton>
         </div>
