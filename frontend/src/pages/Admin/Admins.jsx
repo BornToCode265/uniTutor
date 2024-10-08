@@ -46,7 +46,7 @@ const Admins = () => {
   // Handle the delete action
   const handleDelete = async (email) => {
     try {
-      const response = await axios.delete(`${backendUrl}/admins/`, { email: email });
+      const response = await axios.delete(`${backendUrl}/admins/?email=${email}`);
       // Remove the deleted admin from the state
       setRows((prevRows) => prevRows.filter((row) => row.email !== email));
       alert('Admin deleted successfully');

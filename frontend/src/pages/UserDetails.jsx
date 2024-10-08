@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Paper, Grid, Avatar, Divider } from '@mui/material';
 import { Card, Progress, Tag, List } from 'antd';
-import { UserOutlined, MailOutlined, PhoneOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { MailOutlined, PhoneOutlined, EnvironmentOutlined, NumberOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { backendUrl } from 'config';
@@ -63,10 +63,6 @@ export default function UserDetails() {
         const response = await axios.get(backendUrl + url);
         setDbUser(response.data);
         console.log(dbUser);
-        if (dbUser) {
-          user.email = dbUser.email;
-          user.name = dbUser.name;
-        }
       } catch (err) {
         console.error('Error fetching user data:', err);
         setError('Failed to load user data.');
@@ -97,10 +93,11 @@ export default function UserDetails() {
               <List
                 size="small"
                 dataSource={[
+                  userType === 'student' && { icon: <NumberOutlined />, text: dbUser.registration_number },
                   { icon: <MailOutlined />, text: dbUser.email },
                   { icon: <PhoneOutlined />, text: dbUser.phone_number },
                   { icon: <EnvironmentOutlined />, text: user.address }
-                ]}
+                ].filter(Boolean)}
                 renderItem={(item) => (
                   <List.Item>
                     <Typography variant="body2">
@@ -112,6 +109,10 @@ export default function UserDetails() {
             </Grid>
             {userType === 'student' && (
               <Grid item xs={12} md={8}>
+                <Card title="Program" style={{ marginBottom: 16 }}>
+                  <Typography variant="h5">{dbUser.program_name}</Typography>
+                  <Typography variant="body2">{dbUser.description}</Typography>
+                </Card>
                 <Card title="Subjects" style={{ marginBottom: 16 }}>
                   {user.subjects.map((subject) => (
                     <Tag key={subject} color="blue" style={{ margin: '0 8px 8px 0' }}>

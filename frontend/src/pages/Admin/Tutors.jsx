@@ -47,13 +47,13 @@ function Tutors() {
   // Handle the delete action
   const handleDelete = async (email) => {
     try {
-      const response = await axios.delete(`${backendUrl}/admins/`, { email: email });
+      const response = await axios.delete(`${backendUrl}/tutors/?email=${email}`);
       // Remove the deleted admin from the state
       setRows((prevRows) => prevRows.filter((row) => row.email !== email));
-      alert('Admin deleted successfully');
+      alert('User deleted successfully');
     } catch (err) {
       console.error('Error deleting admin:', err);
-      alert('Failed to delete admin.');
+      alert('Failed to delete user.');
     }
   };
 
