@@ -47,7 +47,7 @@ export default function DataDisplayTable({ columns, rows }) {
               <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={row.id}>
                 {columns.map((column) => (
                   <TableCell key={column.id}>
-                    <Link color="secondary">{row[column.id]}</Link>
+                    {column.format ? column.format(row) : <Link color="secondary">{row[column.id]}</Link>}
                   </TableCell>
                 ))}
               </TableRow>

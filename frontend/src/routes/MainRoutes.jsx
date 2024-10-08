@@ -13,7 +13,7 @@ import Register from 'pages/authentication/register';
 import Programs from 'pages/Admin/Programs';
 import Subjects from 'pages/Admin/Subjects';
 import RouteGuard from 'components/guards/RouteGuard';
-import UserDetails from 'pages/Admin/UserDetails';
+import UserDetails from 'pages/UserDetails';
 import ProgramDetails from 'pages/ProgramDetails';
 import SubjectDetails from 'pages/SubjectDetails';
 
