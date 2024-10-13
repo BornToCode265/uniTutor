@@ -50,39 +50,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pdo = null;
 }
 
-// GET request handler for fetching all session bookings
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        $stmt = $pdo->query("SELECT * FROM session_bookings ORDER BY booked_at DESC");
-        
-        $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        http_response_code(200);
-        echo json_encode($bookings);
-    } catch (PDOException $e) {
-        handleError("Database error: " . $e->getMessage());
-    }
-
-    // Close the PDO connection
-    $pdo = null;
-}
-
-// GET request handler for fetching a single session booking by student_id and session_id
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['student_id']) && isset($_GET['session_id'])) {
-    try {
         $studentId = $_GET['student_id'];
-        $sessionId = $_GET['session_id'];
-        $stmt = $pdo->prepare("SELECT * FROM session_bookings WHERE student_id = :student_id AND session_id = :session_id");
-        $stmt->execute([':student_id' => $studentId, ':session_id' => $sessionId]);
-        
-        $booking = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($booking) {
+
+        // Prepare the main query to join all necessary tables
+        $stmt = $pdo->prepare("
+            SELECT 
+                sb.*,
+                t.name AS tutor_name,
+                s.name AS student_name,
+                se.session_id AS session_id,
+                se.session_date AS session_date,
+                se.session_time AS session_time,
+                se.status AS session_status,
+                se.feedback_id AS feedback_id,
+                se.created_at AS created_at,
+                su.subject_name AS subject_name
+            FROM 
+                session_bookings sb
+            LEFT JOIN 
+                tutors t ON sb.tutor_id = t.tutor_id
+            LEFT JOIN 
+                students s ON sb.student_id = s.student_id
+            LEFT JOIN 
+                sessions se ON sb.session_id = se.session_id
+            LEFT JOIN 
+                subjects su ON se.subject_id = su.subject_id
+            WHERE 
+                sb.student_id = :student_id
+        ");
+
+        $stmt->execute(['student_id' => $studentId]);
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!empty($result)) {
             http_response_code(200);
-            echo json_encode($booking);
+            echo json_encode($result);
         } else {
             http_response_code(404);
-            echo json_encode(['message' => 'Session booking not found']);
+            echo json_encode(['message' => 'No sessions found for the specified student']);
         }
     } catch (PDOException $e) {
         handleError("Database error: " . $e->getMessage());
@@ -91,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['student_id']) && isset(
     // Close the PDO connection
     $pdo = null;
 }
-
 // PUT request handler for updating a session booking
 if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['student_id']) && isset($_GET['session_id'])) {
     $data = json_decode(file_get_contents('php://input'), true);

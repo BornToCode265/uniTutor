@@ -60,11 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
+        $tutorId = $_GET['tutor_id'];
       
         // Fetch all sessions
-        $stmt = $pdo->query("SELECT * FROM sessions ORDER BY created_at DESC");
+     $stmt = $pdo->prepare("SELECT * FROM sessions WHERE tutor_id=:tutor_id");
+        $stmt->execute(['tutor_id' => $tutorId]);
         $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+        
         // Initialize arrays to store results
         $tutors = [];
         $students = [];

@@ -25,7 +25,7 @@ case 'GET':
          $email = $_GET['email'];
         $password = $_GET['password'];
 
-        $stmt = $pdo->prepare("SELECT * FROM tutors WHERE email = :email");
+        $stmt = $pdo->prepare("SELECT * FROM students WHERE email = :email");
 
       
         http_response_code(200);
