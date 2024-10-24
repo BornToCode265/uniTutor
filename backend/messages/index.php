@@ -24,83 +24,13 @@ switch ($method) {
     
     // POST request handler for creating a new message
     case 'POST':
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (!isset($data['sender_id']) || !isset($data['receiver_id']) || !isset($data['message_content']) || !isset($data['sent_at'])) {
-            handleError("Missing required fields: sender_id, receiver_id, message_content, sent_at");
-        }
-        try {
-            $stmt = $pdo->prepare("INSERT INTO messages (sender_id, receiver_id, message_content) VALUES (:sender_id, :receiver_id, :message_content)");
-            $stmt->execute([
-                ':sender_id' => $data['sender_id'],
-                ':receiver_id' => $data['receiver_id'],
-                ':message_content' => $data['message_content']
-            ]);
-            if ($stmt->rowCount() > 0) {
-                http_response_code(201);
-                echo json_encode(['message' => 'Message inserted successfully']);
-            } else {
-                handleError("Failed to insert message");
-            }
-        } catch (PDOException $e) {
-            handleError("Database error: " . $e->getMessage());
-        }
-        break;
 
     // GET request handler
     case 'GET':
-        if (isset($_GET['sender_id']) && isset($_GET['receiver_id'])) {
-            // Fetch only the most recent message from each sender
-            try {
-                $senderId = $_GET['sender_id'];
-                $receiverId = $_GET['receiver_id'];
-                $stmt = $pdo->prepare("
-                    SELECT 
-                        m.*, 
-                        t.name AS sender_name, 
-                        s.name AS receiver_name 
-                    FROM messages m
-                    JOIN students s ON m.receiver_id = s.student_id 
-                    JOIN tutors t ON m.sender_id = t.tutor_id 
-                    WHERE (m.sender_id = :sender_id AND m.receiver_id = :receiver_id) 
-                    OR (m.sender_id = :receiver_id AND m.receiver_id = :sender_id)
-                    GROUP BY m.sender_id
-                    ORDER BY m.sent_at ASC
-                ");
-                $stmt->execute([':sender_id' => $senderId, ':receiver_id' => $receiverId]);
-                $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if (count($messages) > 0) {
-                    http_response_code(200);
-                    echo json_encode($messages);
-                } else {
-                    http_response_code(404);
-                    echo json_encode(['message' => 'No messages found between these users']);
-                }
-            } catch (PDOException $e) {
-                handleError("Database error: " . $e->getMessage());
-            }
-        } elseif (isset($_GET['id'])) {
+        if (isset($_GET['student_id'])) {
+        } elseif (isset($_GET['tutor_id'])) {
             // Fetch single message by ID with sender's and receiver's names
             try {
-                $id = $_GET['id'];
-                $stmt = $pdo->prepare("
-                    SELECT 
-                        m.*, 
-                        t.name AS sender_name, 
-                        s.name AS receiver_name 
-                    FROM messages m
-                    JOIN students s ON m.receiver_id = s.student_id
-                    JOIN tutors t ON m.sender_id = t.tutor_id
-                    WHERE m.id = :id
-                ");
-                $stmt->execute([':id' => $id]);
-                $message = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($message) {
-                    http_response_code(200);
-                    echo json_encode($message);
-                } else {
-                    http_response_code(404);
-                    echo json_encode(['message' => 'Message not found']);
-                }
             } catch (PDOException $e) {
                 handleError("Database error: " . $e->getMessage());
             }

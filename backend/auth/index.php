@@ -57,7 +57,7 @@ case 'POST':
 
 
 
-  case 'GET':
+case 'GET':
  
 
 if (isset($_GET['email']) && isset($_GET['password'])) {

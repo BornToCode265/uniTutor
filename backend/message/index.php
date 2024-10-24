@@ -17,42 +17,12 @@ function handleError($message) {
     exit;
 }
 
-// POST request handler for creating a new message
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($data['sender_id']) || !isset($data['receiver_id']) || !isset($data['message_content']) || !isset($data['sent_at'])) {
-        handleError("Missing required fields: sender_id, receiver_id, message_content, sent_at");
-    }
-
-    try {
-        $stmt = $pdo->prepare("INSERT INTO messages (sender_id, receiver_id, message_content, sent_at) VALUES (:sender_id, :receiver_id, :message_content, :sent_at)");
-        
-        $stmt->execute([
-            ':sender_id' => $data['sender_id'],
-            ':receiver_id' => $data['receiver_id'],
-            ':message_content' => $data['message_content'],
-            ':sent_at' => $data['sent_at']
-        ]);
-
-        if ($stmt->rowCount() > 0) {
-            http_response_code(201);
-            echo json_encode(['message' => 'Message inserted successfully']);
-        } else {
-            handleError("Failed to insert message");
-        }
-    } catch (PDOException $e) {
-        handleError("Database error: " . $e->getMessage());
-    }
-
-    // Close the PDO connection
-    $pdo = null;
-}
 
 // GET request handler for fetching all messages
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['sender_id']) && !isset($_GET['receiver_id'])) {
     try {
-        $stmt = $pdo->query("SELECT * FROM messages ORDER BY sent_at DESC");
+        $stmt = $pdo->query("SELECT * FROM messages ORDER BY sent_at ASC");
         
         $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
