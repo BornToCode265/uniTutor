@@ -1,22 +1,22 @@
 <?php
 
 // Import your db_connection.php file
-require_once("./../conn.php");
+require_once("./../../conn.php");
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-function getChatsWithTutorDetails($pdo, $student_id) {
+function getChatsWithStudentDetails($pdo, $tutor_id) {
     try {
         $stmt = $pdo->prepare("
-            SELECT c.chat_id, c.created_at, t.tutor_id, t.name AS tutor_name, t.email AS tutor_email, t.phone_number AS tutor_phone
+            SELECT c.chat_id, c.created_at, s.student_id, s.registration_number, s.name AS student_name, s.email AS student_email, s.phone_number AS student_phone
             FROM chats c
-            LEFT JOIN tutors t ON c.tutor_id = t.tutor_id
-            WHERE c.student_id = :student_id
+            LEFT JOIN students s ON c.student_id = s.student_id
+            WHERE c.tutor_id = :tutor_id
             ORDER BY c.created_at DESC
         ");
 
-        $stmt->bindParam(':student_id', $student_id);
+        $stmt->bindParam(':tutor_id', $tutor_id);
         $stmt->execute();
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -27,13 +27,12 @@ function getChatsWithTutorDetails($pdo, $student_id) {
         return null;
     }
 }
-
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Usage example
-$student_id = $_GET['student_id']; // Replace with actual student ID
 
-$chats = getChatsWithTutorDetails($pdo, $student_id);
+// Usage example
+$tutor_id = $_GET['tutor_id']; // Replace with actual tutor ID
+$chats = getChatsWithStudentDetails($pdo, $tutor_id);
 
 if ($chats !== null) {
     echo json_encode(
@@ -46,5 +45,6 @@ if ($chats !== null) {
         'message' => 'No chats found or database error occurred.'
     ]);
 }
+
 
 ?>
