@@ -26,6 +26,7 @@ case 'GET':
         $stmt = $pdo->prepare("SELECT s.*, p.program_name, p.description
                               FROM students s
                               LEFT JOIN programs p ON s.program_id = p.program_id
+                              LEFT JOIN departments d on s.department_id = d.department_id
                               WHERE s.student_id = :student_id");
         
         $stmt->execute([':student_id' => $student_id]);

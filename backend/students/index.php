@@ -71,29 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pdo = null;
 }
 
-// GET request handler for fetching a single student by registration_number
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['registration_number'])) {
-    try {
-        $registration_number = $_GET['registration_number'];
-        $stmt = $pdo->prepare("SELECT * FROM students WHERE registration_number = :registration_number");
-        $stmt->execute([':registration_number' => $registration_number]);
-        
-        $student = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($student) {
-            http_response_code(200);
-            echo json_encode($student);
-        } else {
-            http_response_code(404);
-            echo json_encode(['message' => 'Student not found']);
-        }
-    } catch (PDOException $e) {
-        handleError("Database error: " . $e->getMessage());
-    }
 
-    // Close the PDO connection
-    $pdo = null;
-}
 
 // PUT request handler for updating a student
 if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($_GET['registration_number'])) {
