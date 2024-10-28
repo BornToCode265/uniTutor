@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         // Query to join departments and programs tables
         $sql = "
-            SELECT d.department_id, d.department_name, d.department_description,
+            SELECT d.department_id, d.department_name, d.department_description,d.department_code,
                    p.program_id, p.program_name
             FROM departments d
             LEFT JOIN programs p ON d.department_id = p.department_id
@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     'department_id' => $deptId,
                     'department_name' => $row['department_name'],
                     'department_description' => $row['department_description'],
+                    'department_code' => $row['department_code'],
                     'programs' => []
                 ];
             }

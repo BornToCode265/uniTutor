@@ -17,6 +17,7 @@ function handleError($message) {
 }
 
 
+
 // GET request handler for fetching all students
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
