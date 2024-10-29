@@ -35,7 +35,7 @@ case 'GET':
 
     
         if (md5($password) === $admin[0]['password_hash'] ) {
-            echo json_encode(true);
+            echo json_encode($admin[0]);
         } else {
             echo json_encode(false);
         }
