@@ -3,13 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 06, 2024 at 01:45 PM
+-- Generation Time: Oct 29, 2024 at 06:41 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
-
-CREATE DATABASE IF NOT EXISTS mzuni_tutoring_app;
-
-USE mzuni_tutoring_app;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -58,6 +54,7 @@ CREATE TABLE `availability` (
   `tutor_id` int(11) DEFAULT NULL,
   `available_date` date NOT NULL,
   `available_time` time NOT NULL,
+  `available_up_to` time NOT NULL,
   `status` enum('Available','Booked','Unavailable') DEFAULT 'Available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -65,9 +62,60 @@ CREATE TABLE `availability` (
 -- Dumping data for table `availability`
 --
 
-INSERT INTO `availability` (`availability_id`, `tutor_id`, `available_date`, `available_time`, `status`) VALUES
-(1, 1, '2023-03-15', '09:00:00', 'Available'),
-(2, 2, '2023-03-16', '10:00:00', 'Available');
+INSERT INTO `availability` (`availability_id`, `tutor_id`, `available_date`, `available_time`, `available_up_to`, `status`) VALUES
+(1, 1, '2023-03-15', '09:00:00', '11:00:00', 'Booked'),
+(2, 2, '2023-03-16', '10:00:00', '12:00:00', 'Available'),
+(3, 1, '2024-11-10', '14:00:00', '17:00:00', 'Available'),
+(4, 1, '2024-10-29', '09:00:00', '17:00:00', 'Available');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chats`
+--
+
+CREATE TABLE `chats` (
+  `chat_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `tutor_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `chats`
+--
+
+INSERT INTO `chats` (`chat_id`, `student_id`, `tutor_id`, `created_at`) VALUES
+(1, 1, 1, '2024-10-25 02:35:16'),
+(2, 2, 2, '2024-10-25 02:35:16'),
+(3, 3, 3, '2024-10-25 02:35:16'),
+(4, 4, 4, '2024-10-25 02:35:16'),
+(5, 1, 1, '2024-10-25 03:15:16'),
+(6, 2, 1, '2024-10-25 04:04:30'),
+(7, 1, 1, '2024-10-25 04:11:52'),
+(8, 2, 1, '2024-10-25 04:14:02');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `departments`
+--
+
+CREATE TABLE `departments` (
+  `department_id` int(10) NOT NULL,
+  `department_name` text DEFAULT NULL,
+  `department_description` text DEFAULT NULL,
+  `department_code` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `departments`
+--
+
+INSERT INTO `departments` (`department_id`, `department_name`, `department_description`, `department_code`) VALUES
+(1, 'Information and Communication Technology Department', 'Information and Communication Technology Department is bringing technology to solve africans problems', 'ICT'),
+(2, 'Engineering', 'Department of Engineering', 'ENGES'),
+(3, 'Mathematics', 'Department of Mathematics', 'MATH');
 
 -- --------------------------------------------------------
 
@@ -119,9 +167,10 @@ INSERT INTO `feedback` (`feedback_id`, `session_id`, `rating`, `comments`, `crea
 
 CREATE TABLE `messages` (
   `message_id` int(11) NOT NULL,
-  `sender_id` int(11) DEFAULT NULL,
-  `receiver_id` int(11) DEFAULT NULL,
-  `message_content` text DEFAULT NULL,
+  `chat_id` int(11) NOT NULL,
+  `sender_type` enum('student','tutor') NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `message_text` text NOT NULL,
   `sent_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -129,9 +178,21 @@ CREATE TABLE `messages` (
 -- Dumping data for table `messages`
 --
 
-INSERT INTO `messages` (`message_id`, `sender_id`, `receiver_id`, `message_content`, `sent_at`) VALUES
-(1, 1, 1, 'Hi Dr. Taylor, I have a question about the assignment.', '2024-10-04 12:32:53'),
-(2, 2, 2, 'Hi Dr. Wilson, could we schedule an extra session?', '2024-10-04 12:32:53');
+INSERT INTO `messages` (`message_id`, `chat_id`, `sender_type`, `sender_id`, `message_text`, `sent_at`) VALUES
+(1, 1, 'student', 1, 'Hello Professor, I have a question about my assignment.', '2024-10-25 02:35:16'),
+(2, 1, 'tutor', 1, 'Hi John, I am happy to help. What is your question?', '2024-10-25 02:35:16'),
+(3, 2, 'student', 2, 'Good morning, Dr. White!', '2024-10-25 02:35:16'),
+(4, 2, 'tutor', 2, 'Good morning, Mary! How can I assist you today?', '2024-10-25 02:35:16'),
+(5, 3, 'student', 3, 'Ms. Green, I am struggling with the homework.', '2024-10-25 02:35:16'),
+(6, 3, 'tutor', 3, 'No worries Alice, let’s go through it step by step.', '2024-10-25 02:35:16'),
+(7, 4, 'student', 4, 'Hi Mr. Black, can we discuss my project?', '2024-10-25 02:35:16'),
+(8, 4, 'tutor', 4, 'Sure, Bob. Let’s talk about your project.', '2024-10-25 02:35:16'),
+(9, 5, 'student', 1, 'GH68VW1', '2024-10-25 03:15:16'),
+(10, 6, 'student', 2, 'hir HK8HY6', '2024-10-25 04:04:30'),
+(11, 7, 'student', 1, 'Prince Nsusa', '2024-10-25 04:11:52'),
+(12, 8, 'student', 2, 'Capital Hill', '2024-10-25 04:14:02'),
+(13, 8, 'tutor', 1, 'hie', '2024-10-26 05:11:05'),
+(14, 8, 'tutor', 1, 'yes Jane', '2024-10-26 05:16:00');
 
 -- --------------------------------------------------------
 
@@ -142,16 +203,17 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `receiver_id`, `message_conte
 CREATE TABLE `programs` (
   `program_id` int(11) NOT NULL,
   `program_name` varchar(100) NOT NULL,
-  `description` text DEFAULT NULL
+  `description` text DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `programs`
 --
 
-INSERT INTO `programs` (`program_id`, `program_name`, `description`) VALUES
-(1, 'Computer Science', 'Bachelor\'s degree in Computer Science'),
-(2, 'Mathematics', 'Bachelor\'s degree in Mathematics');
+INSERT INTO `programs` (`program_id`, `program_name`, `description`, `department_id`) VALUES
+(1, 'Computer Science', 'Bachelor\'s degree in Computer Science', 1),
+(2, 'Mathematics', 'Bachelor\'s degree in Mathematics', 3);
 
 -- --------------------------------------------------------
 
@@ -217,7 +279,10 @@ CREATE TABLE `sessions` (
 
 INSERT INTO `sessions` (`session_id`, `tutor_id`, `student_id`, `subject_id`, `session_date`, `session_time`, `status`, `feedback_id`, `created_at`) VALUES
 (1, 1, 1, 1, '2023-03-17', '11:00:00', 1, NULL, '2024-10-04 12:32:52'),
-(2, 2, 2, 2, '2023-03-18', '12:00:00', 1, NULL, '2024-10-04 12:32:52');
+(2, 2, 2, 2, '2023-03-18', '12:00:00', 1, NULL, '2024-10-04 12:32:52'),
+(5, 1, 2, 1, '2024-11-10', '14:00:00', 3, 1, '2024-10-21 22:44:21'),
+(6, 1, 2, 1, '2024-10-29', '09:00:00', 3, 1, '2024-10-24 05:06:46'),
+(7, 1, 3, 1, '2024-10-29', '09:00:00', 1, 1, '2024-10-28 23:19:13');
 
 -- --------------------------------------------------------
 
@@ -276,16 +341,26 @@ CREATE TABLE `students` (
   `phone_number` varchar(20) DEFAULT NULL,
   `program_id` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `password_hash` varchar(256) NOT NULL
+  `password_hash` varchar(256) NOT NULL,
+  `department_id` int(10) DEFAULT NULL,
+  `year_of_study` int(11) DEFAULT NULL,
+  `academic_level` varchar(50) DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `nationality` varchar(100) DEFAULT NULL,
+  `language` varchar(100) DEFAULT NULL,
+  `technical_skills` text DEFAULT NULL,
+  `hobbies` text DEFAULT NULL,
+  `goals_motivation` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `registration_number`, `name`, `email`, `phone_number`, `program_id`, `created_at`, `password_hash`) VALUES
-(1, 'CS001', 'John Doe', 'john.doe@mzuni.ac.mw', '0888888888', 1, '2024-10-04 12:32:50', '527bd5b5d689e2c32ae974c6229ff785'),
-(2, 'MATH002', 'Jane Smith', 'jane.smith@mzuni.ac.mw', '0999999999', 2, '2024-10-04 12:32:50', '5844a15e76563fedd11840fd6f40ea7b');
+INSERT INTO `students` (`student_id`, `registration_number`, `name`, `email`, `phone_number`, `program_id`, `created_at`, `password_hash`, `department_id`, `year_of_study`, `academic_level`, `date_of_birth`, `nationality`, `language`, `technical_skills`, `hobbies`, `goals_motivation`) VALUES
+(1, 'CS001', 'John Doe', 'john.doe@mzuni.ac.mw', '0888888888', 1, '2024-10-04 12:32:50', '527bd5b5d689e2c32ae974c6229ff785', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'Bedict2619', 'Jane Smith', 'jane.smith@mzuni.ac.mw', '0999999999', 2, '2024-10-04 12:32:50', '5844a15e76563fedd11840fd6f40ea7b', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'BMATH0324', 'Andrew Stima', 'stima@my.mzuni.ac.mw', '+265888001347', 2, '2024-10-28 22:39:29', '0e55666a4ad822e0e34299df3591d979', 3, 3, 'Bachelor', '1993-10-13', 'Malawian', 'English', 'Graphical designing', 'Reading', 'apply mathematics in solving community prgrams');
 
 -- --------------------------------------------------------
 
@@ -319,16 +394,21 @@ CREATE TABLE `tutors` (
   `email` varchar(100) NOT NULL,
   `phone_number` varchar(20) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `password_hash` varchar(256) NOT NULL
+  `password_hash` varchar(256) NOT NULL,
+  `qualification` text DEFAULT NULL,
+  `expertise` text DEFAULT NULL,
+  `year_of_graduation` date DEFAULT NULL,
+  `years_experience` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tutors`
 --
 
-INSERT INTO `tutors` (`tutor_id`, `name`, `email`, `phone_number`, `created_at`, `password_hash`) VALUES
-(1, 'Dr. John Taylor', 'jtaylor@mzuni.ac.mw', '0777777777', '2024-10-04 12:32:50', '6c72103eb1c20f139f8bf00a5d2351f0'),
-(2, 'Dr. Jane Wilson', 'jwilson@mzuni.ac.mw', '0666666666', '2024-10-04 12:32:50', 'b2fd71222e997881ce80bb4550aecb8c');
+INSERT INTO `tutors` (`tutor_id`, `name`, `email`, `phone_number`, `created_at`, `password_hash`, `qualification`, `expertise`, `year_of_graduation`, `years_experience`) VALUES
+(1, 'Dr. John Taylor', 'jtaylor@mzuni.ac.mw', '0777777777', '2024-10-04 12:32:50', '6c72103eb1c20f139f8bf00a5d2351f0', NULL, NULL, NULL, NULL),
+(2, 'Dr. Jane Wilson', 'jwilson@mzuni.ac.mw', '0666666666', '2024-10-04 12:32:50', 'b2fd71222e997881ce80bb4550aecb8c', NULL, NULL, NULL, NULL),
+(3, 'j chando', 'd.phiri@mzuni.ac.mw', '+26588823455', '2024-10-29 00:14:40', 'd93591bdf7860e1e4ee2fca799911215', 'Array', 'Array', '2024-09-30', 3);
 
 -- --------------------------------------------------------
 
@@ -412,6 +492,20 @@ ALTER TABLE `availability`
   ADD KEY `tutor_id` (`tutor_id`);
 
 --
+-- Indexes for table `chats`
+--
+ALTER TABLE `chats`
+  ADD PRIMARY KEY (`chat_id`),
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `tutor_id` (`tutor_id`);
+
+--
+-- Indexes for table `departments`
+--
+ALTER TABLE `departments`
+  ADD PRIMARY KEY (`department_id`);
+
+--
 -- Indexes for table `expertise`
 --
 ALTER TABLE `expertise`
@@ -429,8 +523,7 @@ ALTER TABLE `feedback`
 --
 ALTER TABLE `messages`
   ADD PRIMARY KEY (`message_id`),
-  ADD KEY `sender_id` (`sender_id`),
-  ADD KEY `receiver_id` (`receiver_id`);
+  ADD KEY `chat_id` (`chat_id`);
 
 --
 -- Indexes for table `programs`
@@ -482,7 +575,8 @@ ALTER TABLE `status_lookup`
 ALTER TABLE `students`
   ADD PRIMARY KEY (`student_id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `program_id` (`program_id`);
+  ADD KEY `program_id` (`program_id`),
+  ADD KEY `fk_department` (`department_id`);
 
 --
 -- Indexes for table `subjects`
@@ -535,7 +629,19 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `availability`
 --
 ALTER TABLE `availability`
-  MODIFY `availability_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `availability_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `chats`
+--
+ALTER TABLE `chats`
+  MODIFY `chat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `departments`
+--
+ALTER TABLE `departments`
+  MODIFY `department_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `expertise`
@@ -553,7 +659,7 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `programs`
@@ -577,7 +683,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `session_bookings`
@@ -595,7 +701,7 @@ ALTER TABLE `status_lookup`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `subjects`
@@ -607,7 +713,7 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT for table `tutors`
 --
 ALTER TABLE `tutors`
-  MODIFY `tutor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `tutor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tutor_expertise`
@@ -638,6 +744,13 @@ ALTER TABLE `availability`
   ADD CONSTRAINT `availability_ibfk_1` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`);
 
 --
+-- Constraints for table `chats`
+--
+ALTER TABLE `chats`
+  ADD CONSTRAINT `chats_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
+  ADD CONSTRAINT `chats_ibfk_2` FOREIGN KEY (`tutor_id`) REFERENCES `tutors` (`tutor_id`);
+
+--
 -- Constraints for table `feedback`
 --
 ALTER TABLE `feedback`
@@ -647,8 +760,7 @@ ALTER TABLE `feedback`
 -- Constraints for table `messages`
 --
 ALTER TABLE `messages`
-  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `students` (`student_id`),
-  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `tutors` (`tutor_id`);
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`chat_id`);
 
 --
 -- Constraints for table `sessions`
@@ -672,6 +784,7 @@ ALTER TABLE `session_bookings`
 -- Constraints for table `students`
 --
 ALTER TABLE `students`
+  ADD CONSTRAINT `fk_department` FOREIGN KEY (`department_id`) REFERENCES `departments` (`department_id`),
   ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`program_id`) REFERENCES `programs` (`program_id`);
 
 --
