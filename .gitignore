@@ -1,3 +1,9 @@
 
 ./frontend/package.lock.json
 ./frontend/yarn.lock
+./node_modules
+node_modules
+./desktop
+desktop
+./mysql
+mysql

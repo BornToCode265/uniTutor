@@ -7,7 +7,7 @@ $username = "root";
 $password = "";
 $dbname = "mzuni_tutoring_app";
 
-// $servername = "localhost";
+// $servername = "localhost";                 
 // $username = "u897516670_chaintechhub";
 // $password = "P@55w0rD!G8&Zx7YtLq3#";
 // $dbname = "u897516670_chaintechhub";
