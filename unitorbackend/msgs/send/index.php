@@ -13,7 +13,7 @@ $message_text = $data['message_text']; // Message content
 try {
     // Prepare the SQL statement
     $stmt = $pdo->prepare("
-        INSERT INTO Messages (chat_id, sender_type, sender_id, message_text)
+        INSERT INTO messages (chat_id, sender_type, sender_id, message_text)
         VALUES (:chat_id, :sender_type, :sender_id, :message_text);
     ");
 

@@ -12,8 +12,8 @@ try {
     // Prepare the SQL query
     $stmt = $pdo->prepare("
         SELECT *
-        FROM Messages m
-        JOIN Chats c ON m.chat_id = c.chat_id
+        FROM messages m
+        JOIN chats c ON m.chat_id = c.chat_id
         WHERE c.chat_id = :chat_id
         ORDER BY m.sent_at;
     ");

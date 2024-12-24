@@ -16,7 +16,7 @@ try {
 
     // Insert a new chat session
     $stmt = $pdo->prepare("
-        INSERT INTO Chats (student_id, tutor_id)
+        INSERT INTO chats (student_id, tutor_id)
         VALUES (:student_id, :tutor_id);
     ");
     $stmt->execute(['student_id' => $student_id, 'tutor_id' => $tutor_id]);
@@ -26,7 +26,7 @@ try {
 
     // Insert the first message in the new chat
     $stmt = $pdo->prepare("
-        INSERT INTO Messages (chat_id, sender_type, sender_id, message_text)
+        INSERT INTO messages (chat_id, sender_type, sender_id, message_text)
         VALUES (:chat_id, 'student', :sender_id, :message_text);
     ");
     $stmt->execute([
